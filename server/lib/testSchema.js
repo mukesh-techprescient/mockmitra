@@ -43,6 +43,8 @@ export const testFileSchema = z
       })
       .default({}),
     instructions: z.array(z.string()).default([]),
+    // Original question paper(s), shown as download links on the test page.
+    sources: z.array(z.object({ label: z.string().min(1), url: z.string().url() })).default([]),
     sections: z.array(z.object({ id: z.string(), name: z.string() })).min(1),
     questions: z.array(questionSchema).min(1),
   })

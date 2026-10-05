@@ -29,7 +29,7 @@ Practice-exam app for CET / NEET / BITSAT / SAT style multiple-choice papers.
 
 ## Data model
 - **Category** `{name, slug, description, order}` — "MHT-CET", "NEET", "BITSAT"… admin-defined.
-- **Test** `{title, category, year, durationMinutes, marking{correct,incorrect,unattempted}, instructions[],
+- **Test** `{title, category, year, durationMinutes, marking{correct,incorrect,unattempted}, instructions[], sources[{label,url}],
   sections[{id,name}], questions[], published}` — questions are embedded (150 Qs ≈ 300 KB, far under 16 MB)
   so a test loads in one read.
   - question `{qid, number, section, topic, difficulty, text, image, options[{key,text,image}], answer, explanation, explanationImage}`
@@ -60,6 +60,7 @@ Validated by `server/lib/testSchema.js` (shared by the API, the CLI importer and
   "durationMinutes": 180,
   "marking": { "correct": 1, "incorrect": 0, "unattempted": 0 },   // e.g. NEET: 4 / -1 / 0
   "instructions": ["..."],
+  "sources": [{ "label": "Question paper (PDF)", "url": "https://..." }],   // optional; links on the test page
   "sections": [{ "id": "physics", "name": "Physics" }],
   "questions": [{
     "id": "q1", "number": 1, "section": "physics",

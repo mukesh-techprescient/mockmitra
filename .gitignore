@@ -8,3 +8,4 @@ tools/pdf2json/.work
 *.review.txt
 *.env
 !.env.example
+samples/pdfs/

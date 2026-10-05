@@ -23,6 +23,13 @@ export default function TestIntro() {
           <div><b>+{m.correct}</b><span>Correct</span></div>
           <div><b>{m.incorrect}</b><span>Wrong</span></div>
         </div>
+        {t.sources?.length > 0 && (
+          <p><b>Original paper:</b>{' '}
+            {t.sources.map((s, i) => (
+              <span key={s.url}>{i > 0 && ' · '}<a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a></span>
+            ))}
+          </p>
+        )}
         {t.sections.length > 1 && <p><b>Sections:</b> {t.sections.map((s) => s.name).join(' · ')}</p>}
         {t.instructions?.length > 0 && (
           <>

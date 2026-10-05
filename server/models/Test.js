@@ -35,6 +35,7 @@ const testSchema = new mongoose.Schema(
       unattempted: { type: Number, default: 0 },
     },
     instructions: [String],
+    sources: [{ _id: false, label: String, url: String }],
     sections: [{ _id: false, id: String, name: String }],
     questions: [questionSchema],
     questionCount: Number,

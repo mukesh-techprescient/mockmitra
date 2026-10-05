@@ -64,6 +64,7 @@ export async function importTest(json, { userId, replaceTestId, createCategory =
     durationMinutes: data.durationMinutes,
     marking: data.marking,
     instructions: data.instructions,
+    sources: data.sources,
     sections: data.sections,
     questions,
     questionCount: questions.length,
