@@ -16,7 +16,10 @@ const attemptSchema = new mongoose.Schema(
     test: { type: mongoose.Schema.Types.ObjectId, ref: 'Test', required: true },
     status: { type: String, enum: ['in_progress', 'submitted'], default: 'in_progress' },
     startedAt: { type: Date, default: Date.now },
-    deadline: Date,
+    deadline: Date, // pushed back on resume by the time spent paused
+    pausedAt: { type: Date, default: null }, // set while paused; the clock is stopped
+    pausedMs: { type: Number, default: 0 }, // total time spent paused
+    lastQid: String, // question on screen when paused, to resume there
     submittedAt: Date,
     answers: [answerSchema],
     result: {
@@ -35,5 +38,7 @@ const attemptSchema = new mongoose.Schema(
 );
 
 attemptSchema.index({ user: 1, test: 1, status: 1 });
+// At most one open attempt per user per test (guards against double "start" requests).
+attemptSchema.index({ user: 1, test: 1 }, { unique: true, partialFilterExpression: { status: 'in_progress' } });
 
 export default mongoose.models.Attempt || mongoose.model('Attempt', attemptSchema);

@@ -25,32 +25,43 @@ export default function Exam() {
   const [confirming, setConfirming] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [pauseBusy, setPauseBusy] = useState(false);
 
   const pending = useRef(new Map());
   const flushTimer = useRef(null);
   const answersRef = useRef(answers);
   answersRef.current = answers;
+  const idxRef = useRef(0);
+  idxRef.current = idx;
   const enteredAt = useRef(Date.now());
   const deadlineRef = useRef(0);
   const offsetRef = useRef(0);
   const submittedRef = useRef(false);
 
-  // ---- load / resume
+  // ---- load / resume. While paused the server sends no questions.
+  const applyPayload = useCallback(({ attempt, test, serverNow }) => {
+    setTest(test);
+    setAttemptId(attempt._id);
+    setPaused(attempt.paused);
+    offsetRef.current = serverNow - Date.now();
+    deadlineRef.current = new Date(attempt.deadline).getTime();
+    setRemaining(attempt.remainingMs / 1000);
+    const map = {};
+    for (const a of attempt.answers) map[a.qid] = { selected: a.selected, flagged: a.flagged, timeSpentSec: a.timeSpentSec, visited: !!(a.selected || a.flagged || a.timeSpentSec) };
+    if (test.questions?.length) {
+      const saved = test.questions.findIndex((x) => x.qid === attempt.lastQid);
+      const at = saved >= 0 ? saved : Math.min(idxRef.current, test.questions.length - 1); // back to where you paused
+      map[test.questions[at].qid] = { ...map[test.questions[at].qid], visited: true };
+      setIdx(at);
+    }
+    setAnswers(map);
+    enteredAt.current = Date.now();
+  }, []);
+
   useEffect(() => {
-    api('/attempts', { method: 'POST', body: { testId } })
-      .then(({ attempt, test, serverNow }) => {
-        setTest(test);
-        setAttemptId(attempt._id);
-        offsetRef.current = serverNow - Date.now();
-        deadlineRef.current = new Date(attempt.deadline).getTime();
-        const map = {};
-        for (const a of attempt.answers) map[a.qid] = { selected: a.selected, flagged: a.flagged, timeSpentSec: a.timeSpentSec, visited: !!(a.selected || a.flagged || a.timeSpentSec) };
-        if (test.questions[0]) map[test.questions[0].qid].visited = true;
-        setAnswers(map);
-        enteredAt.current = Date.now();
-      })
-      .catch(setLoadErr);
-  }, [testId]);
+    api('/attempts', { method: 'POST', body: { testId } }).then(applyPayload).catch(setLoadErr);
+  }, [testId, applyPayload]);
 
   // ---- autosave
   const flush = useCallback(async (opts = {}) => {
@@ -85,7 +96,7 @@ export default function Exam() {
 
   // Record time spent on the question we're leaving.
   const commitTime = useCallback(() => {
-    const q = test?.questions[idx];
+    const q = test?.questions?.[idx];
     if (!q) return;
     const add = (Date.now() - enteredAt.current) / 1000;
     enteredAt.current = Date.now();
@@ -117,9 +128,39 @@ export default function Exam() {
     }
   }, [attemptId, commitTime, flush, nav]);
 
-  // ---- timer
+  // ---- pause / resume
+  const pause = useCallback(async () => {
+    setPauseBusy(true);
+    commitTime();
+    try {
+      await flush();
+      const { attempt } = await api(`/attempts/${attemptId}/pause`, { method: 'POST', body: { qid: test?.questions?.[idx]?.qid } });
+      setPaused(true);
+      setRemaining(attempt.remainingMs / 1000);
+      setConfirming(false);
+      setPaletteOpen(false);
+      setTest(({ questions, ...meta }) => meta); // drop the questions until resumed
+    } catch (e) {
+      alert(`Could not pause: ${e.message}`);
+    } finally {
+      setPauseBusy(false);
+    }
+  }, [attemptId, commitTime, flush, test, idx]);
+
+  const resume = useCallback(async () => {
+    setPauseBusy(true);
+    try {
+      applyPayload(await api(`/attempts/${attemptId}/resume`, { method: 'POST' }));
+    } catch (e) {
+      alert(`Could not resume: ${e.message}`);
+    } finally {
+      setPauseBusy(false);
+    }
+  }, [attemptId, applyPayload]);
+
+  // ---- timer (stopped while paused)
   useEffect(() => {
-    if (!attemptId) return;
+    if (!attemptId || paused) return;
     const tick = () => {
       const left = (deadlineRef.current - (Date.now() + offsetRef.current)) / 1000;
       setRemaining(Math.max(0, left));
@@ -128,7 +169,7 @@ export default function Exam() {
     tick();
     const t = setInterval(tick, 1000);
     return () => clearInterval(t);
-  }, [attemptId, submit]);
+  }, [attemptId, paused, submit]);
 
   // ---- navigation
   const qs = test?.questions || [];
@@ -170,6 +211,31 @@ export default function Exam() {
   if (loadErr) return <div className="container"><ErrorBox error={loadErr} /></div>;
   if (!test || remaining === null) return <Spinner label="Preparing your test…" />;
 
+  if (paused) {
+    const answered = Object.values(answers).filter((a) => a.selected).length;
+    const total = Object.keys(answers).length;
+    return (
+      <div className="paused-wrap">
+        <div className="card paused-card">
+          <div className="paused-icon" aria-hidden><i /><i /></div>
+          <h1>Your test is paused</h1>
+          <p className="muted">{test.title}</p>
+          <div className="stats-row">
+            <div><b>{fmtDuration(remaining)}</b><span>Time left (stopped)</span></div>
+            <div><b>{answered}/{total}</b><span>Answered</span></div>
+          </div>
+          <p className="muted small">
+            Questions are hidden while paused. Your answers are saved — you can sign out and resume later from any device.
+          </p>
+          <div className="row-center">
+            <button className="btn" onClick={() => nav('/')} disabled={pauseBusy}>Exit to tests</button>
+            <button className="btn primary" onClick={resume} disabled={pauseBusy}>{pauseBusy ? 'Resuming…' : '▶ Resume test'}</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const sectionName = (id) => test.sections.find((s) => s.id === id)?.name;
   const low = remaining < 300;
 
@@ -180,6 +246,7 @@ export default function Exam() {
         <div className={`save ${saveState}`}>{saveState === 'saving' ? 'Saving…' : saveState === 'error' ? 'Offline – retrying' : 'Saved'}</div>
         <div className={`timer ${low ? 'low' : ''}`} aria-live="polite">⏱ {fmtDuration(remaining)}</div>
         <button className="btn sm show-sm" onClick={() => setPaletteOpen((o) => !o)}>Questions</button>
+        <button className="btn sm" onClick={pause} disabled={submitting || pauseBusy} title="Stop the clock and hide the questions"><span className="pause-glyph" aria-hidden><i /><i /></span>Pause</button>
         <button className="btn primary sm" onClick={() => setConfirming(true)} disabled={submitting}>Submit</button>
       </header>
 

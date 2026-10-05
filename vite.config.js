@@ -5,5 +5,5 @@ export default defineConfig({
   root: 'web',
   plugins: [react()],
   build: { outDir: '../dist', emptyOutDir: true },
-  server: { proxy: { '/api': 'http://localhost:8888' } },
+  server: { proxy: { '/api': process.env.API_URL || 'http://localhost:8888' } },
 });

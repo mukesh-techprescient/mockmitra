@@ -31,7 +31,7 @@ export default function TestIntro() {
           </>
         )}
         <ul className="instructions muted small">
-          <li>The timer starts when you press Start and keeps running if you leave the page. You can resume until time runs out.</li>
+          <li>The timer starts when you press Start. Use <b>Pause</b> to stop the clock and hide the questions; resume any time, even after signing out. If you just close the page without pausing, the timer keeps running.</li>
           <li>Answers save automatically. The test is submitted automatically when time is up.</li>
           <li>Keyboard: A–D or 1–4 to choose, ← → to move between questions.</li>
         </ul>

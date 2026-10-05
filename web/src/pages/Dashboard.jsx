@@ -48,7 +48,7 @@ export default function Dashboard() {
                 </div>
                 <div className="test-foot">
                   {t.mine.inProgress ? (
-                    <span className="badge warn">In progress</span>
+                    <span className="badge warn">{t.mine.paused ? 'Paused' : 'In progress'}</span>
                   ) : t.mine.best ? (
                     <span className="badge ok">Best {t.mine.best.score}/{t.mine.best.maxScore} ({pct(t.mine.best.score, t.mine.best.maxScore)}%)</span>
                   ) : (

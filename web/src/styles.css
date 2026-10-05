@@ -185,3 +185,12 @@ tr:last-child td { border-bottom: 0; }
   .topbar { gap: .5rem; } .topbar nav a { padding: .35rem .45rem; }
 }
 .table-wrap td:first-child { min-width: 200px; }
+
+/* paused exam */
+.paused-wrap { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+.paused-card { width: 100%; max-width: 460px; text-align: center; padding: 2rem 1.5rem; }
+.paused-card h1 { margin-bottom: .2rem; }
+.paused-icon { width: 56px; height: 56px; margin: 0 auto .75rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; gap: 6px; background: var(--primary-soft); }
+.paused-icon i { width: 6px; height: 22px; border-radius: 2px; background: var(--primary); }
+.pause-glyph { display: inline-flex; gap: 3px; } .pause-glyph i { width: 3px; height: 11px; border-radius: 1px; background: currentColor; }
+.row-center { display: flex; justify-content: center; gap: .5rem; margin-top: 1rem; flex-wrap: wrap; }

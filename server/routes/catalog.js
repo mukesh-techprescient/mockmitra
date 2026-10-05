@@ -12,16 +12,19 @@ r.get('/catalog', requireAuth, ah(async (req, res) => {
   const [categories, tests, attempts] = await Promise.all([
     Category.find().sort({ order: 1, name: 1 }).lean(),
     Test.find({ published: true }).select('-questions').sort({ year: -1, createdAt: -1 }).lean(),
-    Attempt.find({ user: req.user.id }).select('test status result.score result.maxScore submittedAt').lean(),
+    Attempt.find({ user: req.user.id }).select('test status pausedAt result.score result.maxScore submittedAt').lean(),
   ]);
   const byTest = new Map();
   for (const a of attempts) {
     const k = String(a.test);
-    const e = byTest.get(k) || { attempts: 0, best: null, inProgress: null };
+    const e = byTest.get(k) || { attempts: 0, best: null, inProgress: null, paused: false };
     if (a.status === 'submitted') {
       e.attempts += 1;
       if (!e.best || a.result.score > e.best.score) e.best = { score: a.result.score, maxScore: a.result.maxScore };
-    } else e.inProgress = a._id;
+    } else {
+      e.inProgress = a._id;
+      e.paused = !!a.pausedAt;
+    }
     byTest.set(k, e);
   }
   res.json({
@@ -30,7 +33,7 @@ r.get('/catalog', requireAuth, ah(async (req, res) => {
         ...c,
         tests: tests
           .filter((t) => String(t.category) === String(c._id))
-          .map((t) => ({ ...t, mine: byTest.get(String(t._id)) || { attempts: 0, best: null, inProgress: null } })),
+          .map((t) => ({ ...t, mine: byTest.get(String(t._id)) || { attempts: 0, best: null, inProgress: null, paused: false } })),
       }))
       .filter((c) => c.tests.length),
   });
