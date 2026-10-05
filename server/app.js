@@ -12,12 +12,23 @@ export function createApp() {
   const app = express();
   app.use(express.json({ limit: '6mb' })); // Netlify Functions cap request bodies at ~6MB
 
+  // Reports configuration and DB reachability without revealing any secret values.
+  const health = async (_req, res) => {
+    const config = { MONGODB_URI: !!process.env.MONGODB_URI, JWT_SECRET: !!process.env.JWT_SECRET };
+    let db = 'not tried';
+    if (config.MONGODB_URI) {
+      try { await connectDB(); db = 'connected'; } catch (e) { db = `${e.name}: ${e.message}`.slice(0, 300); }
+    }
+    const ok = config.MONGODB_URI && config.JWT_SECRET && db === 'connected';
+    res.status(ok ? 200 : 503).json({ ok, config, db });
+  };
+  app.get(['/api/health', '/.netlify/functions/api/health'], health);
+
   app.use(async (_req, _res, next) => {
-    try { await connectDB(); next(); } catch (e) { next(e); }
+    try { await connectDB(); next(); } catch (e) { e.isDbError = true; next(e); }
   });
 
   const api = express.Router();
-  api.get('/health', (_req, res) => res.json({ ok: true }));
   api.use('/auth', authRoutes);
   api.use('/', catalogRoutes);
   api.use('/attempts', attemptRoutes);
@@ -34,6 +45,8 @@ export function createApp() {
     if (err.name === 'CastError') return res.status(404).json({ error: 'Not found' });
     if (err.type === 'entity.too.large') return res.status(413).json({ error: 'File too large (max ~6MB)' });
     console.error(err);
+    if (err.isDbError) return res.status(503).json({ error: 'Database unavailable — see /api/health' });
+    if (/JWT_SECRET/.test(err.message)) return res.status(500).json({ error: 'Server misconfigured: JWT_SECRET is not set' });
     res.status(500).json({ error: 'Server error' });
   });
   return app;
