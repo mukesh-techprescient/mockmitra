@@ -1,0 +1,663 @@
+{
+  "schemaVersion": 1,
+  "title": "MHT-CET 2025 — Physics (Q1–22 sample)",
+  "category": "mht-cet",
+  "year": 2025,
+  "description": "First 22 Physics questions from the MHT-CET 2025 paper, hand-converted as a sample.",
+  "durationMinutes": 30,
+  "marking": {
+    "correct": 1,
+    "incorrect": 0,
+    "unattempted": 0
+  },
+  "instructions": [
+    "Each question has exactly one correct option.",
+    "Each correct response is awarded one (1) mark. There is no negative marking."
+  ],
+  "sections": [
+    {
+      "id": "physics",
+      "name": "Physics"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "number": 1,
+      "section": "physics",
+      "topic": "Waves",
+      "difficulty": "easy",
+      "text": "What is the effect of humidity on sound waves when humidity increases?",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "Speed of sound waves is more"
+        },
+        {
+          "key": "b",
+          "text": "Speed of sound waves is less"
+        },
+        {
+          "key": "c",
+          "text": "Speed of sound waves remains same"
+        },
+        {
+          "key": "d",
+          "text": "Speed of sound waves becomes zero"
+        }
+      ],
+      "answer": "a",
+      "explanation": "Speed of sound in a gas: $v = \\sqrt{\\dfrac{\\gamma RT}{M}}$.\nWater vapour ($M = 18$) is lighter than dry air ($M \\approx 29$). More humidity → lower average molar mass $M$ of the air → **higher** speed of sound."
+    },
+    {
+      "id": "q2",
+      "number": 2,
+      "section": "physics",
+      "topic": "Thermal Expansion",
+      "difficulty": "easy",
+      "text": "If $\\alpha$, $\\beta$ and $\\gamma$ are coefficient of linear, area and volume expansion respectively, then",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "$\\gamma = 3\\alpha$"
+        },
+        {
+          "key": "b",
+          "text": "$\\alpha = 3\\gamma$"
+        },
+        {
+          "key": "c",
+          "text": "$\\beta = 3\\alpha$"
+        },
+        {
+          "key": "d",
+          "text": "$\\gamma = 3\\beta$"
+        }
+      ],
+      "answer": "a",
+      "explanation": "For a cube of side $L$: $V + \\Delta V = (L + \\alpha L \\Delta T)^3 \\approx L^3(1 + 3\\alpha\\Delta T)$ (dropping $\\alpha^2$, $\\alpha^3$ terms).\nComparing with $V(1 + \\gamma \\Delta T)$ gives $\\gamma = 3\\alpha$. (Similarly $\\beta = 2\\alpha$, so option (c) is the trap.)"
+    },
+    {
+      "id": "q3",
+      "number": 3,
+      "section": "physics",
+      "topic": "Fluid Mechanics",
+      "difficulty": "easy",
+      "text": "A liquid is filled upto a height of 20 cm in a cylindrical vessel. The speed of liquid coming out of a small hole at the bottom of the vessel is ($g = 10\\ \\mathrm{m\\,s^{-2}}$)",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "$1.2\\ \\mathrm{m\\,s^{-1}}$"
+        },
+        {
+          "key": "b",
+          "text": "$1\\ \\mathrm{m\\,s^{-1}}$"
+        },
+        {
+          "key": "c",
+          "text": "$2\\ \\mathrm{m\\,s^{-1}}$"
+        },
+        {
+          "key": "d",
+          "text": "$3.2\\ \\mathrm{m\\,s^{-1}}$"
+        }
+      ],
+      "answer": "c",
+      "explanation": "Torricelli's law: $v = \\sqrt{2gh} = \\sqrt{2 \\times 10 \\times 0.2} = \\sqrt{4} = 2\\ \\mathrm{m\\,s^{-1}}$.\nRemember to convert 20 cm to 0.2 m."
+    },
+    {
+      "id": "q4",
+      "number": 4,
+      "section": "physics",
+      "topic": "Kinetic Theory of Gases",
+      "difficulty": "easy",
+      "text": "For a perfect gas, two pressures $P_1$ and $P_2$ are shown in figure. The graph shows:",
+      "image": "data:image/png;base64,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",
+      "options": [
+        {
+          "key": "a",
+          "text": "$P_1 > P_2$"
+        },
+        {
+          "key": "b",
+          "text": "$P_1 < P_2$"
+        },
+        {
+          "key": "c",
+          "text": "$P_1 = P_2$"
+        },
+        {
+          "key": "d",
+          "text": "Insufficient data to draw any conclusion"
+        }
+      ],
+      "answer": "a",
+      "explanation": "From $PV = nRT$: $V = \\left(\\dfrac{nR}{P}\\right)T$, so the slope of a $V$–$T$ line is $\\dfrac{nR}{P}$.\nThe $P_2$ line is steeper, so $\\dfrac{nR}{P_2} > \\dfrac{nR}{P_1}$ ⇒ $P_2 < P_1$, i.e. $P_1 > P_2$."
+    },
+    {
+      "id": "q5",
+      "number": 5,
+      "section": "physics",
+      "topic": "Collisions & Centre of Mass",
+      "difficulty": "medium",
+      "text": "A body of mass 2 kg moving with a speed of 4 m/s makes an elastic collision with another body at rest and continues to move in the original direction but with one fourth of its initial speed. The speed of the two body centre of mass is",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "$2.5$ m/s"
+        },
+        {
+          "key": "b",
+          "text": "$5$ m/s"
+        },
+        {
+          "key": "c",
+          "text": "$7.5$ m/s"
+        },
+        {
+          "key": "d",
+          "text": "$10$ m/s"
+        }
+      ],
+      "answer": "a",
+      "explanation": "After collision $v_1 = 4/4 = 1$ m/s. Elastic ($e = 1$): $v_2 - v_1 = u_1 - u_2 = 4$ ⇒ $v_2 = 5$ m/s.\nMomentum: $2 \\times 4 = 2 \\times 1 + m_2 \\times 5$ ⇒ $m_2 = \\dfrac{6}{5}$ kg.\n$v_{cm} = \\dfrac{2 \\times 4}{2 + 6/5} = \\dfrac{8}{3.2} = 2.5$ m/s.\nShortcut: $v_{cm}$ doesn't change in a collision, so you can compute it with the *before* values."
+    },
+    {
+      "id": "q6",
+      "number": 6,
+      "section": "physics",
+      "topic": "Kinetic Theory of Gases",
+      "difficulty": "medium",
+      "text": "According to law of equipartition of energy the molar specific heat of a diatomic gas at constant volume where the molecule has one additional vibrational mode is :-",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "$\\dfrac{9}{2}R$"
+        },
+        {
+          "key": "b",
+          "text": "$\\dfrac{5}{2}R$"
+        },
+        {
+          "key": "c",
+          "text": "$\\dfrac{3}{2}R$"
+        },
+        {
+          "key": "d",
+          "text": "$\\dfrac{7}{2}R$"
+        }
+      ],
+      "answer": "d",
+      "explanation": "$C_V = \\dfrac{f}{2}R$. A diatomic molecule has 3 translational + 2 rotational = 5 degrees of freedom.\nOne vibrational mode adds 2 (kinetic + potential) ⇒ $f = 7$, so $C_V = \\dfrac{7}{2}R$.\nTrap: counting the vibrational mode as only 1 gives $3R$, which isn't offered."
+    },
+    {
+      "id": "q7",
+      "number": 7,
+      "section": "physics",
+      "topic": "Magnetic Force on Current",
+      "difficulty": "medium",
+      "text": "As shown in the figure, a metallic rod of linear density $0.45\\ \\mathrm{kg\\,m^{-1}}$ is lying horizontally on a smooth incline plane which makes an angle of $45^\\circ$ with the horizontal. The minimum current flowing in the rod required to keep it stationary, when $0.15$ T magnetic field is acting on it in the vertical upward direction, will be : {Use $g = 10\\ \\mathrm{m/s^2}$}",
+      "image": "data:image/png;base64,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",
+      "options": [
+        {
+          "key": "a",
+          "text": "30 A"
+        },
+        {
+          "key": "b",
+          "text": "15 A"
+        },
+        {
+          "key": "c",
+          "text": "10 A"
+        },
+        {
+          "key": "d",
+          "text": "3 A"
+        }
+      ],
+      "answer": "a",
+      "explanation": "The magnetic force $F = ILB$ is horizontal (B is vertical). Balance along the incline:\n$mg \\sin 45^\\circ = ILB \\cos 45^\\circ$ ⇒ $I = \\dfrac{(m/L)\\,g}{B}\\tan 45^\\circ = \\dfrac{0.45 \\times 10}{0.15} = 30$ A."
+    },
+    {
+      "id": "q8",
+      "number": 8,
+      "section": "physics",
+      "topic": "Gauss's Law",
+      "difficulty": "hard",
+      "text": "A sphere of radius $R$ carries charge density $\\rho$ proportional to the square of the distance ($r$) from the centre such that $\\rho = Cr^2$, where $C$ is a positive constant. At a distance $R/2$ from the centre, the magnitude of the electric field is",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "$\\dfrac{CR^3}{20\\epsilon_0}$"
+        },
+        {
+          "key": "b",
+          "text": "$\\dfrac{CR^3}{10\\epsilon_0}$"
+        },
+        {
+          "key": "c",
+          "text": "$\\dfrac{CR^3}{5\\epsilon_0}$"
+        },
+        {
+          "key": "d",
+          "text": "None of these"
+        }
+      ],
+      "answer": "d",
+      "explanation": "Gauss's law with a sphere of radius $r = R/2$:\n$E \\cdot 4\\pi r^2 = \\dfrac{1}{\\epsilon_0}\\displaystyle\\int_0^{r} C r'^2 \\cdot 4\\pi r'^2\\,dr' = \\dfrac{4\\pi C r^5}{5\\epsilon_0}$\n⇒ $E = \\dfrac{C r^3}{5\\epsilon_0} = \\dfrac{C (R/2)^3}{5\\epsilon_0} = \\dfrac{CR^3}{40\\epsilon_0}$.\nThis isn't among (a)–(c), so the answer is \"None of these\". Trap: option (c) is the field at the surface $r = R$."
+    },
+    {
+      "id": "q9",
+      "number": 9,
+      "section": "physics",
+      "topic": "Electric Dipole",
+      "difficulty": "easy",
+      "text": "Two point charges $-q$ and $+q$ are placed at a distance of L, as shown in the figure. The magnitude of electric field intensity at a distance $R$ ($R \\gg L$) varies as:",
+      "image": "data:image/png;base64,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",
+      "options": [
+        {
+          "key": "a",
+          "text": "$\\dfrac{1}{R^3}$"
+        },
+        {
+          "key": "b",
+          "text": "$\\dfrac{1}{R^4}$"
+        },
+        {
+          "key": "c",
+          "text": "$\\dfrac{1}{R^6}$"
+        },
+        {
+          "key": "d",
+          "text": "$\\dfrac{1}{R^2}$"
+        }
+      ],
+      "answer": "a",
+      "explanation": "$-q$ and $+q$ separated by $L$ form an electric dipole. Far away ($R \\gg L$) a dipole's field falls off as $E \\propto \\dfrac{p}{R^3}$.\nTrap: $1/R^2$ is for a single point charge."
+    },
+    {
+      "id": "q10",
+      "number": 10,
+      "section": "physics",
+      "topic": "Surface Tension",
+      "difficulty": "easy",
+      "text": "The work done in increasing the size of a soap film from $10\\ \\text{cm} \\times 6\\ \\text{cm}$ to $10\\ \\text{cm} \\times 11\\ \\text{cm}$ is $3 \\times 10^{-4}$ J. The surface tension of the film is",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "$11 \\times 10^{-2}$ N/m"
+        },
+        {
+          "key": "b",
+          "text": "$6 \\times 10^{-2}$ N/m"
+        },
+        {
+          "key": "c",
+          "text": "$3 \\times 10^{-2}$ N/m"
+        },
+        {
+          "key": "d",
+          "text": "$1.5 \\times 10^{-2}$ N/m"
+        }
+      ],
+      "answer": "c",
+      "explanation": "A soap film has **two** surfaces: $W = S \\times 2\\Delta A$.\n$\\Delta A = (110 - 60)\\ \\text{cm}^2 = 50 \\times 10^{-4}\\ \\text{m}^2$\n$S = \\dfrac{3 \\times 10^{-4}}{2 \\times 50 \\times 10^{-4}} = 3 \\times 10^{-2}$ N/m.\nTrap: forgetting the factor 2 gives option (b)."
+    },
+    {
+      "id": "q11",
+      "number": 11,
+      "section": "physics",
+      "topic": "Thermodynamics",
+      "difficulty": "medium",
+      "text": "A sample of gas expands from volume $V_1$ to $V_2$. The amount of work done by the gas is greatest when the expansion is",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "isothermal"
+        },
+        {
+          "key": "b",
+          "text": "isobaric"
+        },
+        {
+          "key": "c",
+          "text": "adiabatic"
+        },
+        {
+          "key": "d",
+          "text": "equal in all cases"
+        }
+      ],
+      "answer": "b",
+      "explanation": "Work = area under the $P$–$V$ curve. Starting from the same state and going from $V_1$ to $V_2$:\n- isobaric: pressure stays at its initial value → largest area,\n- isothermal: pressure falls as $1/V$,\n- adiabatic: pressure falls fastest ($PV^\\gamma$ = const) → smallest area.\nSo $W_{\\text{isobaric}} > W_{\\text{isothermal}} > W_{\\text{adiabatic}}$.\nNote: the published answer key for this paper lists (a) isothermal, which is incorrect for an expansion between the same volumes."
+    },
+    {
+      "id": "q12",
+      "number": 12,
+      "section": "physics",
+      "topic": "Kirchhoff's Laws",
+      "difficulty": "easy",
+      "text": "The figure below shows currents in a part of electric circuit. The current $i$ is",
+      "image": "data:image/png;base64,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",
+      "options": [
+        {
+          "key": "a",
+          "text": "1.7 amp"
+        },
+        {
+          "key": "b",
+          "text": "3.7 amp"
+        },
+        {
+          "key": "c",
+          "text": "1.3 amp"
+        },
+        {
+          "key": "d",
+          "text": "1 amp"
+        }
+      ],
+      "answer": "a",
+      "explanation": "Kirchhoff's junction rule (current in = current out):\nFirst junction: $2 + 2 = 4$ A flows on.\nSecond junction: 1 A leaves, so $4 - 1 = 3$ A continues.\nLast junction: $3 = 1.3 + i$ ⇒ $i = 1.7$ A."
+    },
+    {
+      "id": "q13",
+      "number": 13,
+      "section": "physics",
+      "topic": "Rotational Dynamics",
+      "difficulty": "medium",
+      "text": "Two discs of moment of inertia $I_1$ and $I_2$ and angular speeds $\\omega_1$ and $\\omega_2$ are rotating along collinear axes passing through their centre of mass and perpendicular to their plane. If the two are made to rotate combindly along the same axis the rotational KE of system will be",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "$\\dfrac{I_1\\omega_1 + I_2\\omega_2}{2(I_1 + I_2)}$"
+        },
+        {
+          "key": "b",
+          "text": "$\\dfrac{(I_1 + I_2)(\\omega_1 + \\omega_2)^2}{2}$"
+        },
+        {
+          "key": "c",
+          "text": "$\\dfrac{(I_1\\omega_1 + I_2\\omega_2)^2}{2(I_1 + I_2)}$"
+        },
+        {
+          "key": "d",
+          "text": "None of these"
+        }
+      ],
+      "answer": "c",
+      "explanation": "No external torque ⇒ angular momentum is conserved: $I_1\\omega_1 + I_2\\omega_2 = (I_1 + I_2)\\omega$ ⇒ $\\omega = \\dfrac{I_1\\omega_1 + I_2\\omega_2}{I_1 + I_2}$.\n$KE = \\tfrac{1}{2}(I_1 + I_2)\\omega^2 = \\dfrac{(I_1\\omega_1 + I_2\\omega_2)^2}{2(I_1 + I_2)}$.\nOption (a) has the wrong dimensions (not energy) — a quick way to eliminate it."
+    },
+    {
+      "id": "q14",
+      "number": 14,
+      "section": "physics",
+      "topic": "Magnetic Effects of Current",
+      "difficulty": "easy",
+      "text": "If a current is passed in a spring, it",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "gets compressed"
+        },
+        {
+          "key": "b",
+          "text": "gets expanded"
+        },
+        {
+          "key": "c",
+          "text": "oscillates"
+        },
+        {
+          "key": "d",
+          "text": "remains unchanged"
+        }
+      ],
+      "answer": "a",
+      "explanation": "Neighbouring turns of the spring carry current in the **same** direction. Parallel currents in the same direction attract, so the turns pull together and the spring gets compressed."
+    },
+    {
+      "id": "q15",
+      "number": 15,
+      "section": "physics",
+      "topic": "Magnetic Effects of Current",
+      "difficulty": "easy",
+      "text": "A long solenoid carrying a current produces a magnetic field $B$ along its axis. If the current is doubled and the number of turns per cm is halved, the new value of magnetic field will be equal to",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "$B$"
+        },
+        {
+          "key": "b",
+          "text": "$2B$"
+        },
+        {
+          "key": "c",
+          "text": "$4B$"
+        },
+        {
+          "key": "d",
+          "text": "$\\dfrac{B}{2}$"
+        }
+      ],
+      "answer": "a",
+      "explanation": "$B = \\mu_0 n I$. New field: $B' = \\mu_0 \\left(\\dfrac{n}{2}\\right)(2I) = \\mu_0 n I = B$."
+    },
+    {
+      "id": "q16",
+      "number": 16,
+      "section": "physics",
+      "topic": "Collisions",
+      "difficulty": "medium",
+      "text": "Hail stroms are observed to strike the surface of the frozen lake at $30^\\circ$ with the vertical and rebound at $60^\\circ$ with the vertical. Assume contact to be smooth, the coefficient of restitution is :",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "$e = \\dfrac{1}{\\sqrt{3}}$"
+        },
+        {
+          "key": "b",
+          "text": "$e = \\dfrac{1}{3}$"
+        },
+        {
+          "key": "c",
+          "text": "$e = \\sqrt{3}$"
+        },
+        {
+          "key": "d",
+          "text": "$e = 3$"
+        }
+      ],
+      "answer": "b",
+      "explanation": "Smooth surface ⇒ the component **parallel** to the surface is unchanged: $u \\sin 30^\\circ = v \\sin 60^\\circ$ ⇒ $v = \\dfrac{u}{\\sqrt{3}}$.\n$e = \\dfrac{\\text{normal speed after}}{\\text{normal speed before}} = \\dfrac{v\\cos 60^\\circ}{u\\cos 30^\\circ} = \\dfrac{\\frac{u}{\\sqrt3}\\cdot\\frac12}{u\\cdot\\frac{\\sqrt3}{2}} = \\dfrac{1}{3}$."
+    },
+    {
+      "id": "q17",
+      "number": 17,
+      "section": "physics",
+      "topic": "Thermodynamics",
+      "difficulty": "medium",
+      "text": "Following figure shows two processes A and B for a gas. If $\\Delta Q_A$ and $\\Delta Q_B$ are the amount of heat absorbed by the system in two cases, and $\\Delta U_A$ and $\\Delta U_B$ are changes in internal energies, respectively, then:",
+      "image": "data:image/png;base64,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",
+      "options": [
+        {
+          "key": "a",
+          "text": "$\\Delta Q_A < \\Delta Q_B,\\ \\Delta U_A < \\Delta U_B$"
+        },
+        {
+          "key": "b",
+          "text": "$\\Delta Q_A > \\Delta Q_B,\\ \\Delta U_A > \\Delta U_B$"
+        },
+        {
+          "key": "c",
+          "text": "$\\Delta Q_A > \\Delta Q_B,\\ \\Delta U_A = \\Delta U_B$"
+        },
+        {
+          "key": "d",
+          "text": "$\\Delta Q_A = \\Delta Q_B,\\ \\Delta U_A = \\Delta U_B$"
+        }
+      ],
+      "answer": "c",
+      "explanation": "Internal energy is a state function: both paths go from $i$ to $f$, so $\\Delta U_A = \\Delta U_B$.\nPath A lies above B on the $P$–$V$ diagram, so the area under it is larger: $W_A > W_B$.\n$\\Delta Q = \\Delta U + W$ ⇒ $\\Delta Q_A > \\Delta Q_B$."
+    },
+    {
+      "id": "q18",
+      "number": 18,
+      "section": "physics",
+      "topic": "Electromagnetic Induction",
+      "difficulty": "medium",
+      "text": "Two identical coils each of self-inductance L, are connected in series and are placed so close to each other that all the flux from one coil links with the other. The total self-inductance of the system is:",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "L"
+        },
+        {
+          "key": "b",
+          "text": "2L"
+        },
+        {
+          "key": "c",
+          "text": "3L"
+        },
+        {
+          "key": "d",
+          "text": "4L"
+        }
+      ],
+      "answer": "d",
+      "explanation": "Perfect flux linkage ⇒ coupling coefficient $k = 1$, so $M = k\\sqrt{L_1 L_2} = L$.\nSeries, fluxes aiding: $L_{eq} = L_1 + L_2 + 2M = L + L + 2L = 4L$.\nTrap: ignoring mutual inductance gives $2L$."
+    },
+    {
+      "id": "q19",
+      "number": 19,
+      "section": "physics",
+      "topic": "Moving Coil Galvanometer",
+      "difficulty": "easy",
+      "text": "In a moving coil galvanometer, the deflection of the coil $\\theta$ is related to the elecrical current $i$ by the relation",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "$i \\propto \\tan\\theta$"
+        },
+        {
+          "key": "b",
+          "text": "$i \\propto \\theta$"
+        },
+        {
+          "key": "c",
+          "text": "$i \\propto \\theta^2$"
+        },
+        {
+          "key": "d",
+          "text": "$i \\propto \\sqrt{\\theta}$"
+        }
+      ],
+      "answer": "b",
+      "explanation": "In equilibrium, deflecting torque = restoring torque: $NIAB = C\\theta$ ⇒ $i = \\dfrac{C}{NAB}\\theta$, so $i \\propto \\theta$ (the radial field makes the scale linear).\n$i \\propto \\tan\\theta$ is the tangent galvanometer — a common mix-up."
+    },
+    {
+      "id": "q20",
+      "number": 20,
+      "section": "physics",
+      "topic": "Magnetic Materials",
+      "difficulty": "easy",
+      "text": "Metals getting magnetised by orientation of atomic magnetic moments in external magnetic field are called",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "diamagnetic"
+        },
+        {
+          "key": "b",
+          "text": "paramagnetic"
+        },
+        {
+          "key": "c",
+          "text": "ferromagnetic"
+        },
+        {
+          "key": "d",
+          "text": "antimagnetic"
+        }
+      ],
+      "answer": "b",
+      "explanation": "Paramagnetic atoms have permanent magnetic moments that are randomly oriented; an external field partially **aligns** them, magnetising the material (weakly, in the field direction).\nDiamagnetism comes from induced moments opposing the field (no permanent moments); ferromagnetism involves domains."
+    },
+    {
+      "id": "q21",
+      "number": 21,
+      "section": "physics",
+      "topic": "Transformers",
+      "difficulty": "easy",
+      "text": "A step up transformer operates on a 230 V line and supplies a current of 2 ampere. The ratio of primary and secondary winding is 1:25. The current in primary is",
+      "image": null,
+      "options": [
+        {
+          "key": "a",
+          "text": "25 A"
+        },
+        {
+          "key": "b",
+          "text": "50 A"
+        },
+        {
+          "key": "c",
+          "text": "15 A"
+        },
+        {
+          "key": "d",
+          "text": "12.5 A"
+        }
+      ],
+      "answer": "b",
+      "explanation": "For an ideal transformer $\\dfrac{I_p}{I_s} = \\dfrac{N_s}{N_p} = 25$.\nSecondary current $I_s = 2$ A ⇒ $I_p = 25 \\times 2 = 50$ A.\nA step-up transformer raises voltage and lowers current, so the primary current must be larger than the secondary."
+    },
+    {
+      "id": "q22",
+      "number": 22,
+      "section": "physics",
+      "topic": "Current Electricity",
+      "difficulty": "hard",
+      "text": "The four arms of a Wheatstone bridge have resistances as shown in the figure. A galvanometer of $15\\,\\Omega$ resistance is connected across BD. Calculate the current through the galvanometer when a potential difference of 10 V is maintained across AC.",
+      "image": "data:image/png;base64,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",
+      "options": [
+        {
+          "key": "a",
+          "text": "$2.44\\ \\mu$A"
+        },
+        {
+          "key": "b",
+          "text": "$4.87\\ \\mu$A"
+        },
+        {
+          "key": "c",
+          "text": "$2.44$ mA"
+        },
+        {
+          "key": "d",
+          "text": "$4.87$ mA"
+        }
+      ],
+      "answer": "d",
+      "explanation": "The bridge is unbalanced ($100/10 \\neq 60/5$), so use nodal analysis with $V_A = 10$ V, $V_C = 0$.\nNode B: $\\dfrac{V_B - 10}{100} + \\dfrac{V_B - V_D}{15} + \\dfrac{V_B}{10} = 0$ ⇒ $53V_B - 20V_D = 30$\nNode D: $\\dfrac{V_D - 10}{60} + \\dfrac{V_D - V_B}{15} + \\dfrac{V_D}{5} = 0$ ⇒ $-4V_B + 17V_D = 10$\nSolving: $V_B \\approx 0.865$ V, $V_D \\approx 0.792$ V.\n$I_G = \\dfrac{V_B - V_D}{15} = \\dfrac{0.073}{15} \\approx 4.87 \\times 10^{-3}$ A $= 4.87$ mA."
+    }
+  ]
+}

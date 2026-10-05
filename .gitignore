@@ -1,0 +1,8 @@
+node_modules
+dist
+.env
+.netlify
+tools/pdf2json/.work
+.claude/
+.DS_Store
+*.review.txt

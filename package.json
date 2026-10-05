@@ -1,0 +1,35 @@
+{
+  "name": "mockmitra",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n api,web \"node --watch server/dev.js\" \"vite\"",
+    "dev:api": "node --watch server/dev.js",
+    "dev:web": "vite",
+    "build": "vite build",
+    "seed:admin": "node scripts/seed-admin.js",
+    "import": "node scripts/import-test.js",
+    "pdf2json": "node tools/pdf2json/index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.0",
+    "serverless-http": "^3.2.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "latest",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "dotenv": "^16.4.7",
+    "katex": "^0.16.11",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "sharp": "^0.33.5",
+    "vite": "^6.0.3"
+  }
+}
