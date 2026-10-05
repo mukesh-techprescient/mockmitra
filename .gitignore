@@ -6,3 +6,5 @@ tools/pdf2json/.work
 .claude/
 .DS_Store
 *.review.txt
+*.env
+!.env.example
