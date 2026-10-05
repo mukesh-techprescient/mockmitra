@@ -1,5 +1,9 @@
 const TOKEN_KEY = 'mockmitra.token';
 
+// Figures are cached as immutable for a year. Bump this to make browsers refetch them
+// (v2: earlier responses from the Netlify function were corrupted).
+export const assetUrl = (src) => (src && src.startsWith('/api/assets/') ? `${src}?v=2` : src);
+
 export const getToken = () => { try { return localStorage.getItem(TOKEN_KEY); } catch { return null; } };
 export const setToken = (t) => { try { t ? localStorage.setItem(TOKEN_KEY, t) : localStorage.removeItem(TOKEN_KEY); } catch {} };
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { api } from '../api.js';
+import { api, assetUrl } from '../api.js';
 import Rich from '../components/Rich.jsx';
 import { ErrorBox, Spinner, fmtDuration } from '../components/ui.jsx';
 
@@ -270,7 +270,7 @@ export default function Exam() {
             <span className="muted small">{sectionName(q.section)}</span>
           </div>
           <Rich text={q.text} className="q-text" />
-          {q.image && <img className="q-img" src={q.image} alt={`Figure for question ${idx + 1}`} />}
+          {q.image && <img className="q-img" src={assetUrl(q.image)} alt={`Figure for question ${idx + 1}`} />}
           <div className="options" role="radiogroup">
             {q.options.map((o) => (
               <label key={o.key} className={`option ${a.selected === o.key ? 'selected' : ''}`}>
@@ -278,7 +278,7 @@ export default function Exam() {
                 <span className="opt-key">{o.key.toUpperCase()}</span>
                 <span className="opt-body">
                   <Rich text={o.text} as="span" />
-                  {o.image && <img src={o.image} alt={`Option ${o.key}`} />}
+                  {o.image && <img src={assetUrl(o.image)} alt={`Option ${o.key}`} />}
                 </span>
               </label>
             ))}

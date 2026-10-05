@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { useFetch } from '../useFetch.js';
+import { assetUrl } from '../api.js';
 import Rich from '../components/Rich.jsx';
 import { ErrorBox, Spinner, fmtDate, fmtDuration, pct } from '../components/ui.jsx';
 
@@ -26,14 +27,14 @@ export function QuestionReview({ q, n, mine, sectionName }) {
         {mine?.timeSpentSec > 0 && <span className="muted small">{fmtDuration(mine.timeSpentSec)}</span>}
       </div>
       <Rich text={q.text} className="q-text" />
-      {q.image && <img className="q-img" src={q.image} alt="" />}
+      {q.image && <img className="q-img" src={assetUrl(q.image)} alt="" />}
       <div className="options review">
         {q.options.map((o) => {
           const cls = o.key === q.answer ? 'right' : o.key === sel ? 'wrong' : '';
           return (
             <div key={o.key} className={`option ${cls}`}>
               <span className="opt-key">{o.key.toUpperCase()}</span>
-              <span className="opt-body"><Rich text={o.text} as="span" />{o.image && <img src={o.image} alt="" />}</span>
+              <span className="opt-body"><Rich text={o.text} as="span" />{o.image && <img src={assetUrl(o.image)} alt="" />}</span>
               {o.key === q.answer && <span className="opt-note">Correct answer</span>}
               {o.key === sel && o.key !== q.answer && <span className="opt-note">Your answer</span>}
             </div>
@@ -44,7 +45,7 @@ export function QuestionReview({ q, n, mine, sectionName }) {
         <details className="explanation" open={status !== 'correct'}>
           <summary>Explanation</summary>
           <Rich text={q.explanation} />
-          {q.explanationImage && <img className="q-img" src={q.explanationImage} alt="" />}
+          {q.explanationImage && <img className="q-img" src={assetUrl(q.explanationImage)} alt="" />}
         </details>
       )}
     </article>
