@@ -7,6 +7,8 @@ export async function connectDB() {
   if (conn) return conn;
   if (!process.env.MONGODB_URI) throw new Error('MONGODB_URI is not set');
   conn = globalThis.__mongoConn = await mongoose.connect(process.env.MONGODB_URI, {
+    // Explicit, so a URI without a /database path doesn't silently fall back to "test".
+    dbName: process.env.MONGODB_DB || 'mockmitra',
     serverSelectionTimeoutMS: 8000,
   });
   return conn;

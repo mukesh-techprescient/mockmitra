@@ -17,9 +17,9 @@ export function createApp() {
     const config = { MONGODB_URI: !!process.env.MONGODB_URI, JWT_SECRET: !!process.env.JWT_SECRET };
     let db = 'not tried';
     if (config.MONGODB_URI) {
-      try { await connectDB(); db = 'connected'; } catch (e) { db = `${e.name}: ${e.message}`.slice(0, 300); }
+      try { const c = await connectDB(); db = `connected to "${c.connection.name}"`; } catch (e) { db = `${e.name}: ${e.message}`.slice(0, 300); }
     }
-    const ok = config.MONGODB_URI && config.JWT_SECRET && db === 'connected';
+    const ok = config.MONGODB_URI && config.JWT_SECRET && db.startsWith('connected');
     res.status(ok ? 200 : 503).json({ ok, config, db });
   };
   app.get(['/api/health', '/.netlify/functions/api/health'], health);
