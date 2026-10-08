@@ -10,7 +10,9 @@
     "build": "vite build",
     "seed:admin": "node scripts/seed-admin.js",
     "import": "node scripts/import-test.js",
-    "pdf2json": "node tools/pdf2json/index.js"
+    "pdf2json": "node tools/pdf2json/index.js",
+    "analysis:export": "node scripts/analysis-export.js",
+    "analysis:upload": "node scripts/analysis-upload.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

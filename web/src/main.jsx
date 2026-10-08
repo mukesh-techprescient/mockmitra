@@ -9,6 +9,8 @@ import TestIntro from './pages/TestIntro.jsx';
 import Exam from './pages/Exam.jsx';
 import Review from './pages/Review.jsx';
 import History from './pages/History.jsx';
+import Insights from './pages/Insights.jsx';
+import Students from './pages/admin/Students.jsx';
 import AdminHome from './pages/admin/AdminHome.jsx';
 import Categories from './pages/admin/Categories.jsx';
 import Upload from './pages/admin/Upload.jsx';
@@ -38,7 +40,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/tests/:testId" element={<TestIntro />} />
             <Route path="/results/:attemptId" element={<Review />} />
             <Route path="/history" element={<History />} />
+            <Route path="/insights" element={<Insights />} />
             <Route path="/admin" element={<Guard admin><AdminHome /></Guard>} />
+            <Route path="/admin/students" element={<Guard admin><Students /></Guard>} />
             <Route path="/admin/categories" element={<Guard admin><Categories /></Guard>} />
             <Route path="/admin/upload" element={<Guard admin><Upload /></Guard>} />
             <Route path="/admin/upload/:replaceId" element={<Guard admin><Upload /></Guard>} />

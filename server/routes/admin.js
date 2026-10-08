@@ -5,6 +5,9 @@ import Test from '../models/Test.js';
 import Attempt from '../models/Attempt.js';
 import Asset from '../models/Asset.js';
 import User from '../models/User.js';
+import AnalysisReport from '../models/AnalysisReport.js';
+import { exportPerformance } from '../lib/exportPerformance.js';
+import { saveReport } from '../lib/saveReport.js';
 import { requireAdmin, ah } from '../lib/auth.js';
 import { importTest, validateTestFile, ImportError } from '../lib/importTest.js';
 
@@ -110,6 +113,44 @@ r.delete('/tests/:id', ah(async (req, res) => {
     Asset.deleteMany({ test: req.params.id }),
     Attempt.deleteMany({ test: req.params.id }),
   ]);
+  res.json({ ok: true });
+}));
+
+// ---- students & offline analysis
+r.get('/students', ah(async (_req, res) => {
+  const [users, attempts, reports] = await Promise.all([
+    User.find({ role: 'student' }).select('name email createdAt').sort({ createdAt: -1 }).lean(),
+    Attempt.aggregate([{ $match: { status: 'submitted' } }, { $group: { _id: '$user', n: { $sum: 1 }, last: { $max: '$submittedAt' } } }]),
+    AnalysisReport.aggregate([{ $group: { _id: '$user', n: { $sum: 1 }, last: { $max: '$createdAt' } } }]),
+  ]);
+  const a = new Map(attempts.map((x) => [String(x._id), x]));
+  const rp = new Map(reports.map((x) => [String(x._id), x]));
+  res.json({ students: users.map((u) => ({
+    ...u,
+    attempts: a.get(String(u._id))?.n || 0, lastAttempt: a.get(String(u._id))?.last || null,
+    reports: rp.get(String(u._id))?.n || 0, lastReport: rp.get(String(u._id))?.last || null,
+  })) });
+}));
+
+// Full performance export for offline analysis (same as `npm run analysis:export`).
+r.get('/students/:id/export', ah(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) return res.status(404).json({ error: 'Not found' });
+  res.set('Content-Disposition', `attachment; filename="performance-${user.email.replace(/[^\w.-]/g, '_')}.json"`);
+  res.json(await exportPerformance(user));
+}));
+
+r.get('/students/:id/reports', ah(async (req, res) => {
+  res.json({ reports: await AnalysisReport.find({ user: req.params.id }).sort({ createdAt: -1 }).lean() });
+}));
+
+r.post('/analysis', ah(async (req, res) => {
+  const report = await saveReport(req.body);
+  res.status(201).json({ report: { _id: report._id, title: report.title } });
+}));
+
+r.delete('/analysis/:id', ah(async (req, res) => {
+  await AnalysisReport.findByIdAndDelete(req.params.id);
   res.json({ ok: true });
 }));
 

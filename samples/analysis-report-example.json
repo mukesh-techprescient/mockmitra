@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "kind": "analysis",
+  "userEmail": "riya.test@example.test",
+  "title": "Your first three mocks: where the marks are going",
+  "summary": "Across **3 full-length mocks** (MHT-CET 2025 and two BITSAT papers) your **Mathematics is your strongest subject** (32/40 on both BITSAT papers) and your Physics fundamentals are solid. Most of your lost marks come from three places: **organic chemistry**, the **electromagnetic induction / AC** chapter in Physics, and **guessing under negative marking** in BITSAT. Fixing the first and the last alone is worth roughly **40–60 marks** on a BITSAT paper.",
+  "basedOn": { "attempts": 3, "questions": 410, "through": "2026-10-08" },
+  "weakTopics": [
+    {
+      "subject": "Chemistry",
+      "topic": "Organic chemistry (reaction mechanisms, carbonyls, haloalkanes, biomolecules)",
+      "severity": "high",
+      "evidence": "7 correct out of 34 organic questions (21%) versus 55% on the rest of Chemistry; 8 organic questions skipped. Weakest: Biomolecules 0/4, Reaction Intermediates 0/3, Aldehydes & Ketones 1/4, Carboxylic Acids 1/4, Haloalkanes 1/3.",
+      "advice": "This is a **concepts** gap, not carelessness: your wrong organic answers were spread across options rather than near-misses. Rebuild from carbocation/carbanion stability (inductive, resonance, hyperconjugation) → nucleophilic addition to C=O → named reactions (aldol, Cannizzaro, HVZ, Hofmann). Learn each named reaction as reagent → product → why. Biomolecules and polymers are short NCERT chapters — 2 evenings each, high return."
+    },
+    {
+      "subject": "Physics",
+      "topic": "Electromagnetic Induction & Alternating Current",
+      "severity": "high",
+      "evidence": "0 correct out of 9 questions across the three papers (2 skipped). Every other Physics chapter together: 61/101.",
+      "advice": "One chapter, completely missing — so it's likely a single shaky foundation. Start with flux $\\Phi = BA\\cos\\theta$ and Faraday/Lenz signs, then self-inductance $L = \\mu_0 N^2A/l$ (note $L \\propto N^2$), then AC: reactances $X_L = \\omega L$, $X_C = 1/\\omega C$, impedance and power factor. Do 25 mixed numericals from this chapter before the next mock."
+    },
+    {
+      "subject": "Logical Reasoning",
+      "topic": "Visual puzzles (paper folding, dice, figure formation)",
+      "severity": "medium",
+      "evidence": "1 correct out of 7, and 5 of the 7 were skipped. Non-visual LR (series, coding, directions, blood relations): 24/33.",
+      "advice": "These are fast marks once you have a method. Paper folding: unfold **one fold at a time**, mirroring each hole across the fold line; a cut **on** a fold becomes one hole straddling it. Dice: find a face common to two views and rotate around it. 15 minutes a day for a week is usually enough."
+    },
+    {
+      "subject": "Chemistry",
+      "topic": "Chemical Kinetics & Chemical Thermodynamics",
+      "severity": "low",
+      "evidence": "Kinetics 1/4 (2 skipped), Thermodynamics 1/4. Small samples — watch these in the next two mocks before investing heavily.",
+      "advice": "Revise first-order integrated rate law and half-life tricks ($t_{1/2} = 0.693/k$; '1/4 left' = 2 half-lives), and $\\Delta G = \\Delta H - T\\Delta S$ sign reasoning."
+    }
+  ],
+  "habits": [
+    {
+      "title": "Guessing is costing you about 23 marks per BITSAT paper",
+      "detail": "In the two BITSAT mocks you answered 69 questions wrongly, each costing −1. **39 of your 110 wrong answers overall were given in under 40 seconds** — much faster than your average of ~80 s on questions you got right. Rule for BITSAT: if you can't eliminate at least **two** options, leave it. In Chemistry BITSAT 2 you scored 11 right / 15 wrong — net only 18 marks from 26 answered questions."
+    },
+    {
+      "title": "Too many easy questions lost",
+      "detail": "57 questions tagged easy were answered wrongly across the three tests. Re-read the question stem before marking (units, 'not', 'maximum vs minimum'), and use the Mark for review flag on anything you answered in under 30 s."
+    },
+    {
+      "title": "Use your Maths strength for time",
+      "detail": "Maths is reliable (~80%). In BITSAT, attempt Maths **first or second** while fresh, bank those marks quickly, and leave the remaining time for Chemistry where careful elimination matters most."
+    }
+  ],
+  "strengths": [
+    { "subject": "Mathematics", "topic": "Overall", "note": "32/40 on both BITSAT papers — your scoring engine." },
+    { "subject": "English Proficiency", "topic": "Grammar & vocabulary", "note": "14/20 across the two BITSAT papers." },
+    { "subject": "Logical Reasoning", "topic": "Series, coding & directions", "note": "24/33 — strong once the visual puzzles are fixed." }
+  ],
+  "plan": [
+    { "step": "Days 1–4", "task": "Organic basics: reaction intermediates, GOC effects, nucleophilic addition to carbonyls. 20 NCERT-level questions per day." },
+    { "step": "Days 5–6", "task": "EMI & AC from scratch, then 25 mixed numericals." },
+    { "step": "Day 7", "task": "Visual LR drill (paper folding + dice), 30 questions with the methods above." },
+    { "step": "Days 8–9", "task": "Named organic reactions + Biomolecules & Polymers (NCERT)." },
+    { "step": "Day 10", "task": "Take BITSAT Mock 2 again under strict rules: no answer unless two options are eliminated. Compare negative marks with your first attempt." }
+  ],
+  "author": "MockMitra coach (offline analysis)"
+}

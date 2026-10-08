@@ -23,6 +23,16 @@ npm run pdf2json -- "paper.pdf" --category mht-cet --title "MHT-CET 2025 (PCM)" 
 Then check `samples/mht-cet-2025.review.txt`, fix anything flagged in the JSON, and upload it in **Admin → Upload test JSON**
 (or `npm run import -- samples/mht-cet-2025.json`). Options: `--pages 1-13`, `--no-explain`, `--fresh`, `--concurrency 4`.
 
+## Weak-topic analysis
+Students get automatic, statistical weak-topic analysis on their **Insights** page and on each result.
+For a deeper, written coaching report (see DESIGN.md → Weak-topic analysis):
+```bash
+npm run analysis:export -- student@example.com      # → analysis/in/<email>.json
+# analyse it, write analysis/out/<email>.json (format: samples/analysis-report-example.json)
+npm run analysis:upload -- analysis/out/<email>.json
+```
+Both steps are also available in **Admin → Students**.
+
 ## Deploy to Netlify
 1. Create a MongoDB Atlas cluster (free tier) and allow access from anywhere (`0.0.0.0/0`) — Netlify functions have no fixed IP.
 2. New site from this repo. Build settings come from `netlify.toml`.

@@ -4,6 +4,7 @@ import { useFetch } from '../useFetch.js';
 import { assetUrl } from '../api.js';
 import Rich from '../components/Rich.jsx';
 import { ErrorBox, Spinner, fmtDate, fmtDuration, pct } from '../components/ui.jsx';
+import TopicTable from '../components/TopicTable.jsx';
 
 const FILTERS = [
   ['all', 'All'],
@@ -63,7 +64,7 @@ export default function Review() {
 
   if (loading) return <Spinner />;
   if (error) return <ErrorBox error={error} />;
-  const { attempt, test } = data;
+  const { attempt, test, topics } = data;
   const r = attempt.result;
   const secName = Object.fromEntries(test.sections.map((s) => [s.id, s.name]));
 
@@ -111,6 +112,13 @@ export default function Review() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {topics?.length > 0 && (
+        <details className="card topic-breakdown" open>
+          <summary><b>Where you lost marks</b> <span className="muted small">— topics with the most wrong or skipped questions in this test. <Link to="/insights">Weak topics across all tests →</Link></span></summary>
+          <TopicTable topics={topics} compact />
+        </details>
       )}
 
       <div className="review-bar">

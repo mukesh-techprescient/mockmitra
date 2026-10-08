@@ -8,6 +8,7 @@ export function AdminNav() {
     <div className="admin-nav">
       <Link to="/admin">Tests</Link>
       <Link to="/admin/categories">Categories</Link>
+      <Link to="/admin/students">Students</Link>
       <Link to="/admin/upload" className="btn primary sm">+ Upload test JSON</Link>
     </div>
   );

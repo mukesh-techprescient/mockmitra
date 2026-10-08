@@ -3,6 +3,7 @@ import Test from '../models/Test.js';
 import Attempt from '../models/Attempt.js';
 import { requireAuth, ah } from '../lib/auth.js';
 import { scoreAttempt } from '../lib/scoring.js';
+import { topicStats } from '../lib/topicStats.js';
 
 const r = Router();
 r.use(requireAuth);
@@ -165,7 +166,7 @@ r.get('/:id', ah(async (req, res) => {
   if (!attempt) return res.status(404).json({ error: 'Attempt not found' });
   if (attempt.status !== 'submitted') return res.status(409).json({ error: 'Submit the test to see the review' });
   const test = await Test.findById(attempt.test).populate('category', 'name').lean();
-  res.json({ attempt, test });
+  res.json({ attempt, test, topics: topicStats([{ attempt, test }]).topics });
 }));
 
 export default r;

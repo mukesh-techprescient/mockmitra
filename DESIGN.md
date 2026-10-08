@@ -96,3 +96,44 @@ Per-page results are cached in `tools/pdf2json/.work/`, so you can fix a page an
 ## Later
 Negative-marking presets per category, per-topic analytics across attempts, leaderboard, question bank / custom
 tests mixed from many papers, password reset email, move figures to object storage (S3/R2/Cloudinary).
+
+## Weak-topic analysis
+Two complementary layers, both driven by each question's `topic` tag.
+
+### 1. Statistical (live, automatic)
+`server/lib/topicStats.js` — pure function over a student's submitted attempts.
+- Per topic (keyed by subject + topic) and per subject: seen, correct, incorrect, skipped, accuracy on attempted, avg time.
+- **Mastery** is shrunk toward the student's own subject average so small samples don't produce false alarms:
+  `mastery = (correct + K·subjectRate) / (seen + K)`, K = 4 (subjects use `(correct+1)/(seen+2)`).
+- Verdicts: `weak` < 0.45 ≤ `developing` < 0.70 ≤ `strong`; `insufficient` when fewer than 3 questions seen.
+- Skipped questions count as not correct (skipping a topic is itself a signal).
+- Surfaces: **Insights** page (`GET /api/insights`: all tests, weakest first, per-subject, score trend) and the
+  results page (`GET /api/attempts/:id` → `topics`; single-test view lists where marks were lost).
+
+### 2. Offline coaching report (human/Claude-written, uploaded)
+1. Export: `npm run analysis:export -- student@email` (or Admin → Students → Export JSON) →
+   `analysis/in/<email>.json` with the statistical summary plus every question: subject, topic, difficulty,
+   status, chosen vs correct option, time spent, flagged, short stem text. (`analysis/` is git-ignored — student data.)
+2. Analyse offline — look for patterns the per-topic table can't show: clusters of related topics, guessing under
+   negative marking (fast wrong answers), easy questions lost, skipping habits, time allocation.
+3. Write a report JSON (below) and upload: `npm run analysis:upload -- file.json` or Admin → Students → Upload.
+   It appears as **Coach's report** at the top of the student's Insights page (latest first; older ones collapsible).
+
+### Analysis report (schemaVersion 1)
+Validated by `server/lib/analysisSchema.js`. Text fields support `$LaTeX$` and `**bold**` (no single-`*` italics).
+Example: `samples/analysis-report-example.json`.
+```jsonc
+{
+  "schemaVersion": 1, "kind": "analysis",
+  "userEmail": "student@example.com",          // must match an existing user
+  "title": "Your first three mocks: where the marks are going",
+  "summary": "…",                              // 2–4 sentences
+  "basedOn": { "attempts": 3, "questions": 410, "through": "2026-10-08" },
+  "weakTopics": [{ "subject": "Chemistry", "topic": "Organic chemistry", "severity": "high|medium|low",
+                   "evidence": "7/34 correct (21%) vs 55% on the rest of Chemistry…", "advice": "…" }],
+  "habits":    [{ "title": "Guessing is costing ~23 marks per BITSAT paper", "detail": "…" }],
+  "strengths": [{ "subject": "Mathematics", "topic": "Overall", "note": "…" }],
+  "plan":      [{ "step": "Days 1–4", "task": "…" }],
+  "author": "MockMitra coach"
+}
+```

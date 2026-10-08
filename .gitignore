@@ -9,3 +9,4 @@ tools/pdf2json/.work
 *.env
 !.env.example
 samples/pdfs/
+analysis/

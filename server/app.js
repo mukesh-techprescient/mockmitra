@@ -5,6 +5,7 @@ import authRoutes from './routes/auth.js';
 import catalogRoutes from './routes/catalog.js';
 import attemptRoutes from './routes/attempts.js';
 import adminRoutes from './routes/admin.js';
+import insightsRoutes from './routes/insights.js';
 import { ImportError } from './lib/importTest.js';
 import { formatZodError } from './lib/testSchema.js';
 
@@ -33,6 +34,7 @@ export function createApp() {
   api.use('/', catalogRoutes);
   api.use('/attempts', attemptRoutes);
   api.use('/admin', adminRoutes);
+  api.use('/insights', insightsRoutes);
 
   // Same router whether called as /api/* (local, redirect) or the raw function path.
   app.use(['/api', '/.netlify/functions/api'], api);
