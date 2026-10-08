@@ -3,7 +3,9 @@
 // Topic mastery is shrunk toward the student's own subject average:
 //   mastery = (correct + K × subjectRate) / (seen + K)
 // so with only a handful of questions a topic stays close to how the student does in that subject
-// overall, and is flagged only when it is clearly worse. Subjects use Laplace smoothing
+// overall, and is flagged only when it is clearly worse. A section the student skipped ENTIRELY in an
+// attempt (no question answered — e.g. they only practised Chemistry) is treated as not taken and
+// left out, rather than counted as all-wrong. Subjects use Laplace smoothing
 // (correct + 1) / (seen + 2). Unattempted questions count as "not correct" (skipping a topic is itself
 // a signal); accuracy on attempted questions is reported separately.
 
@@ -47,7 +49,9 @@ export function topicStats(items) {
   for (const { attempt, test } of items) {
     const byQid = new Map(attempt.answers.map((a) => [a.qid, a]));
     const secName = Object.fromEntries(test.sections.map((s) => [s.id, s.name]));
+    const touched = new Set(test.questions.filter((q) => byQid.get(q.qid)?.selected).map((q) => q.section));
     for (const q of test.questions) {
+      if (!touched.has(q.section)) continue; // whole section skipped in this attempt: not taken
       const a = byQid.get(q.qid);
       const st = statusOf(q, a);
       const subject = secName[q.section] || q.section;
