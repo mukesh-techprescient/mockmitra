@@ -5,6 +5,7 @@ import { assetUrl } from '../api.js';
 import Rich from '../components/Rich.jsx';
 import { ErrorBox, Spinner, fmtDate, fmtDuration, pct } from '../components/ui.jsx';
 import TopicTable from '../components/TopicTable.jsx';
+import { BulkSave, NotebookPicker, useNotebooks } from '../components/NotebookPicker.jsx';
 
 const FILTERS = [
   ['all', 'All'],
@@ -14,18 +15,19 @@ const FILTERS = [
   ['flagged', 'Marked'],
 ];
 
-export function QuestionReview({ q, n, mine, sectionName }) {
+export function QuestionReview({ q, n, mine, sectionName, actions, label }) {
   const sel = mine?.selected;
   const status = !sel ? 'unattempted' : sel === q.answer ? 'correct' : 'incorrect';
   return (
     <article className={`card review-q ${status}`} id={`q-${n}`}>
       <div className="q-head">
-        <span className="q-num">Q{n}</span>
+        <span className="q-num">{label ?? `Q${n}`}</span>
         {sectionName && <span className="muted small">{sectionName}</span>}
         {q.topic && <span className="tag">{q.topic}</span>}
         <div className="spacer" />
         {mine && <span className={`badge ${status === 'correct' ? 'ok' : status === 'incorrect' ? 'bad' : ''}`}>{status}</span>}
         {mine?.timeSpentSec > 0 && <span className="muted small">{fmtDuration(mine.timeSpentSec)}</span>}
+        {actions}
       </div>
       <Rich text={q.text} className="q-text" />
       {q.image && <img className="q-img" src={assetUrl(q.image)} alt="" />}
@@ -57,6 +59,7 @@ export default function Review() {
   const { attemptId } = useParams();
   const loc = useLocation();
   const { data, error, loading } = useFetch(`/attempts/${attemptId}`);
+  const nb = useNotebooks(data?.test?._id);
   const [filter, setFilter] = useState('all');
   const [section, setSection] = useState('all');
 
@@ -127,6 +130,8 @@ export default function Review() {
             <button key={k} className={`chip ${filter === k ? 'active' : ''}`} onClick={() => setFilter(k)}>{label}</button>
           ))}
         </div>
+        <BulkSave nb={nb} attemptId={attempt._id} onDone={nb.reload}
+          counts={{ incorrect: r.incorrect, unattempted: r.unattempted, flagged: attempt.answers.filter((a) => a.flagged).length }} />
         {test.sections.length > 1 && (
           <select value={section} onChange={(e) => setSection(e.target.value)}>
             <option value="all">All sections</option>
@@ -136,7 +141,8 @@ export default function Review() {
       </div>
       {!list.length && <div className="empty card">No questions match this filter.</div>}
       {list.map(({ q, n }) => (
-        <QuestionReview key={q.qid} q={q} n={n} mine={byQid.get(q.qid)} sectionName={secName[q.section]} />
+        <QuestionReview key={q.qid} q={q} n={n} mine={byQid.get(q.qid)} sectionName={secName[q.section]}
+          actions={<NotebookPicker nb={nb} testId={test._id} qid={q.qid} attemptId={attempt._id} />} />
       ))}
       <div className="row-end"><Link className="btn primary" to={`/tests/${test._id}`}>Retake test</Link></div>
     </>

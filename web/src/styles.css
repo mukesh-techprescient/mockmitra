@@ -225,3 +225,27 @@ tr:last-child td { border-bottom: 0; }
 .sev.high { color: var(--bad); } .sev.medium { color: var(--warn); }
 .plain-list { padding-left: 1.1rem; } .plain-list li { margin-bottom: .35rem; }
 .plan li { margin-bottom: .35rem; }
+
+/* mistake notebooks */
+.nb-picker { position: relative; }
+.nb-picker .btn.saved { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+.nb-menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 30; width: 260px; padding: .7rem; display: flex; flex-direction: column; gap: .35rem; box-shadow: 0 8px 30px rgba(0,0,0,.15); margin: 0; }
+.nb-menu.wide { width: 300px; }
+.nb-menu label.check { margin: 0; font-weight: 400; }
+.nb-item { display: flex; gap: .5rem; align-items: center; text-align: left; border: 0; background: none; padding: .4rem .5rem; border-radius: 6px; font: inherit; color: var(--text); cursor: pointer; }
+.nb-item:hover:not(:disabled) { background: var(--bg); }
+.nb-item.has { color: var(--ok); cursor: default; }
+.nb-new { display: flex; gap: .4rem; margin-top: .3rem; } .nb-new input { padding: .35rem .5rem; }
+.nb-create { display: flex; flex-direction: column; gap: .5rem; }
+.nb-header h1 { margin: 0; }
+.nb-entry { margin-bottom: 1.4rem; }
+.nb-entry .review-q { margin-bottom: .4rem; }
+.nb-meta { margin: 0 .2rem .35rem; }
+.nb-note textarea { resize: vertical; font-size: .92rem; }
+.nb-note .row-end { margin-top: .35rem; align-items: center; }
+.nb-mynote { background: var(--warn-soft); border-radius: 8px; padding: .55rem .8rem; margin: .5rem 0; }
+.nb-review { max-width: 860px; margin: 0 auto; }
+.review-done { text-align: center; max-width: 520px; margin: 2rem auto; }
+.review-bar .nb-picker { margin-left: auto; }
+.test-card .bar, .subject-card .bar { flex: none; }
+.alert.ok { background: var(--ok-soft); color: var(--ok); }

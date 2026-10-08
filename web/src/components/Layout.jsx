@@ -12,6 +12,7 @@ export default function Layout() {
           <NavLink to="/" end>Tests</NavLink>
           <NavLink to="/history">My results</NavLink>
           <NavLink to="/insights">Insights</NavLink>
+          <NavLink to="/notebooks">Notebooks</NavLink>
           {user?.role === 'admin' && <NavLink to="/admin">Admin</NavLink>}
         </nav>
         <div className="spacer" />

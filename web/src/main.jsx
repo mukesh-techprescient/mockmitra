@@ -10,6 +10,8 @@ import Exam from './pages/Exam.jsx';
 import Review from './pages/Review.jsx';
 import History from './pages/History.jsx';
 import Insights from './pages/Insights.jsx';
+import Notebooks from './pages/Notebooks.jsx';
+import Notebook from './pages/Notebook.jsx';
 import Students from './pages/admin/Students.jsx';
 import AdminHome from './pages/admin/AdminHome.jsx';
 import Categories from './pages/admin/Categories.jsx';
@@ -41,6 +43,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/results/:attemptId" element={<Review />} />
             <Route path="/history" element={<History />} />
             <Route path="/insights" element={<Insights />} />
+            <Route path="/notebooks" element={<Notebooks />} />
+            <Route path="/notebooks/:id" element={<Notebook />} />
             <Route path="/admin" element={<Guard admin><AdminHome /></Guard>} />
             <Route path="/admin/students" element={<Guard admin><Students /></Guard>} />
             <Route path="/admin/categories" element={<Guard admin><Categories /></Guard>} />

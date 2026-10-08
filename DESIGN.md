@@ -137,3 +137,16 @@ Example: `samples/analysis-report-example.json`.
   "author": "MockMitra coach"
 }
 ```
+
+## Mistake notebooks
+`server/models/Notebook.js`, `server/routes/notebooks.js`, pages `Notebooks.jsx` / `Notebook.jsx`.
+- A student owns any number of notebooks (max 50, 1000 questions each). Items reference a question by
+  `test` + `qid` (no copy of the question), and store the student's answer at save time, a personal note,
+  `mastered`, review count and last result.
+- Questions can only be saved from tests the student has **submitted** (answers are hidden before that).
+- Add from a test review: per-question **＋ Notebook** (with inline "new notebook"), or **📒 Save mistakes**
+  to bulk-add wrong / skipped / marked-for-review questions from that attempt. Duplicates are ignored.
+- Notebook page: full question with your original answer vs the correct one, explanation, editable note,
+  Mastered toggle, filters (To review / Mastered / All).
+- Review mode: flashcards over un-mastered questions in random order; answer → check → explanation →
+  "Still learning" or "Got it — mark mastered" (only after answering correctly). Results are saved per item.
