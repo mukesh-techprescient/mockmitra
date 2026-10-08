@@ -31,24 +31,29 @@ export default function TopicTable({ topics, compact = false }) {
       <div className="table-wrap card">
         <table>
           <thead>
-            <tr><th>Topic</th><th>Mastery</th><th className="hide-sm">Correct / seen</th><th className="hide-sm">Accuracy</th><th className="hide-sm">Avg time</th><th>Status</th></tr>
+            <tr><th>Topic</th><th>Mastery</th><th className="hide-sm">Correct / seen</th><th className="hide-sm">Accuracy</th><th className="hide-sm">Avg time</th><th className="hide-sm">Status</th></tr>
           </thead>
           <tbody>
-            {shown.map((t) => (
+            {shown.map((t) => {
+              const status = compact && !showAll && t.verdict === 'insufficient'
+                ? <span className="verdict">{lost(t)} lost</span>
+                : <VerdictChip v={t.verdict} />;
+              return (
               <tr key={t.key}>
-                <td><div className="t-name">{t.topic}</div><div className="muted small">{t.subject}</div></td>
+                <td><div className="t-name">{t.topic}</div><div className="muted small">{t.subject}</div><div className="show-sm-block">{status}</div></td>
                 <td className="bar-cell">
-                  <div className="bar" title={`Smoothed mastery ${pctTxt(t.mastery)}`}><i className={t.verdict} style={{ width: `${Math.round(t.mastery * 100)}%` }} /></div>
-                  <span className="small">{pctTxt(t.mastery)}</span>
+                  <div className="bar-wrap">
+                    <div className="bar" title={`Mastery ${pctTxt(t.mastery)}`}><i className={t.verdict} style={{ width: `${Math.round(t.mastery * 100)}%` }} /></div>
+                    <span className="bar-pct">{pctTxt(t.mastery)}</span>
+                  </div>
                 </td>
                 <td className="hide-sm">{t.correct} / {t.seen}{t.unattempted ? <span className="muted small"> ({t.unattempted} skipped)</span> : null}</td>
                 <td className="hide-sm">{pctTxt(t.accuracy)}</td>
                 <td className="hide-sm">{t.avgTimeSec != null ? fmtDuration(t.avgTimeSec) : '—'}</td>
-                <td>{compact && !showAll && t.verdict === 'insufficient'
-                  ? <span className="verdict">{lost(t)} lost</span>
-                  : <VerdictChip v={t.verdict} />}</td>
+                <td className="hide-sm">{status}</td>
               </tr>
-            ))}
+              );
+            })}
             {!shown.length && <tr><td colSpan={6} className="muted">{compact ? 'No marks lost in this test — excellent.' : 'No topics to show.'}</td></tr>}
           </tbody>
         </table>
