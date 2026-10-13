@@ -1,5 +1,5 @@
 // Import a test JSON straight into MongoDB (bypasses the 6MB upload limit):
-//   npm run import -- samples/mht-cet-2025.json [--publish]
+//   npm run import -- samples/mht-cet-2025.json [--publish] [--replace <testId>]
 import 'dotenv/config';
 import fs from 'node:fs';
 import mongoose from 'mongoose';
@@ -7,18 +7,20 @@ import { connectDB } from '../server/db.js';
 import { importTest, ImportError } from '../server/lib/importTest.js';
 
 const file = process.argv[2];
+const ri = process.argv.indexOf('--replace');
+const replaceTestId = ri > 0 ? process.argv[ri + 1] : undefined;
 if (!file) {
-  console.error('usage: npm run import -- <file.json> [--publish]');
+  console.error('usage: npm run import -- <file.json> [--publish] [--replace <testId>]');
   process.exit(1);
 }
 await connectDB();
 try {
-  const test = await importTest(JSON.parse(fs.readFileSync(file, 'utf8')));
+  const test = await importTest(JSON.parse(fs.readFileSync(file, 'utf8')), { replaceTestId });
   if (process.argv.includes('--publish')) {
     test.published = true;
     await test.save();
   }
-  console.log(`Imported "${test.title}" (${test.questionCount} questions) id=${test._id}${test.published ? ' [published]' : ''}`);
+  console.log(`${replaceTestId ? 'Replaced' : 'Imported'} "${test.title}" (${test.questionCount} questions) id=${test._id}${test.published ? ' [published]' : ''}`);
 } catch (e) {
   if (e instanceof ImportError) console.error(e.message, '\n ', (e.details || []).join('\n  '));
   else throw e;
