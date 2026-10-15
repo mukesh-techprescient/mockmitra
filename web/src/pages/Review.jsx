@@ -6,6 +6,8 @@ import Rich from '../components/Rich.jsx';
 import { ErrorBox, Spinner, fmtDate, fmtDuration, pct } from '../components/ui.jsx';
 import TopicTable from '../components/TopicTable.jsx';
 import { BulkSave, NotebookPicker, useNotebooks } from '../components/NotebookPicker.jsx';
+import CoachReport, { isReady } from '../components/CoachReport.jsx';
+import { CoachChat, ReportRequest } from '../components/AICoach.jsx';
 
 const FILTERS = [
   ['all', 'All'],
@@ -52,6 +54,24 @@ export function QuestionReview({ q, n, mine, sectionName, actions, label }) {
         </details>
       )}
     </article>
+  );
+}
+
+// AI analysis of this one paper, and Q&A about it. Hidden when the AI coach is not set up.
+function PaperInsights({ attemptId }) {
+  const { data, reload } = useFetch(`/insights/papers/${attemptId}`);
+  if (!data?.ai?.enabled && !(data?.report && isReady(data.report))) return null;
+  const { report, ai } = data;
+  return (
+    <section className="coach-section">
+      <div className="section-head">
+        <h2>Paper insights</h2>
+        <ReportRequest path={`/insights/papers/${attemptId}/report`} report={report} ai={ai} onReady={reload}
+          label="Analyse this paper" again="Re-analyse this paper" />
+      </div>
+      {report && isReady(report) && <CoachReport report={report} />}
+      <CoachChat attemptId={attemptId} suggestions={['Which mistakes cost me the most here?', 'Explain the question I spent the most time on', 'What should I revise before the next paper?']} />
+    </section>
   );
 }
 
@@ -123,6 +143,8 @@ export default function Review() {
           <TopicTable topics={topics} compact />
         </details>
       )}
+
+      <PaperInsights attemptId={attempt._id} />
 
       <div className="review-bar">
         <div className="chips">
