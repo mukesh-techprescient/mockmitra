@@ -279,3 +279,29 @@ tr:last-child td { border-bottom: 0; }
 .chat-form { display: flex; gap: .5rem; align-items: flex-end; margin: .4rem 0; }
 .chat-form textarea { flex: 1; min-width: 0; resize: vertical; font: inherit; padding: .55rem .7rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); }
 .chat-form textarea:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+/* section submit during a test */
+.section-bar { display: flex; align-items: center; gap: .5rem; background: var(--surface); border-bottom: 1px solid var(--border); padding-right: 16px; }
+.section-bar .section-tabs { flex: 1; min-width: 0; border-bottom: 0; }
+.section-bar .sec-submit { flex: none; }
+@media (max-width: 640px) {
+  .section-bar { flex-direction: column; align-items: stretch; gap: 0; padding-right: 0; }
+  .section-bar .sec-submit { align-self: flex-end; margin: .4rem 16px .5rem; }
+}
+.sec-score { margin-left: .4rem; font-size: .78rem; font-weight: 600; color: var(--ok); }
+.locked-note { padding: .55rem .8rem; border-radius: 8px; margin-bottom: .75rem; font-size: .9rem; background: var(--bg); border-left: 3px solid var(--muted); }
+.locked-note.correct { background: var(--ok-soft); border-left-color: var(--ok); }
+.locked-note.correct b { color: var(--ok); }
+.locked-note.incorrect { background: var(--bad-soft); border-left-color: var(--bad); }
+.locked-note.incorrect b { color: var(--bad); }
+.options.locked .option { cursor: default; }
+.options.locked .option:hover { border-color: var(--border); }
+.options.locked .option.right:hover { border-color: var(--ok); }
+.options.locked .option.wrong:hover { border-color: var(--bad); }
+.pq.locked.correct, .dot.correct { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+.pq.locked.incorrect, .dot.incorrect { background: var(--bad); border-color: var(--bad); color: #fff; }
+.pq.locked.unattempted { background: var(--bg); border-style: dashed; color: var(--muted); }
+.pq.locked.correct::after { content: '✓'; position: absolute; top: 0; right: 3px; font-size: .62rem; }
+.pq.locked.incorrect::after { content: '✗'; position: absolute; top: 0; right: 3px; font-size: .62rem; }
+.legend .dot.correct, .legend .dot.incorrect { margin-left: .3rem; }
+.section-score .score-big { text-align: left; margin: .2rem 0 .6rem; }

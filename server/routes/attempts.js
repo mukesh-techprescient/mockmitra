@@ -78,7 +78,20 @@ r.post('/', ah(async (req, res) => {
   res.json(examPayload(attempt, test));
 }));
 
-const attemptState = (a) => ({
+// Submitted sections with their score and, per question, only whether it was right — never the correct option.
+function sectionResults(a, test) {
+  const byQid = new Map(a.answers.map((x) => [x.qid, x]));
+  return (a.sectionsSubmitted || []).map(({ section, result }) => ({
+    section,
+    result,
+    statuses: Object.fromEntries(test.questions.filter((q) => q.section === section).map((q) => {
+      const sel = byQid.get(q.qid)?.selected;
+      return [q.qid, !sel ? 'unattempted' : sel === q.answer ? 'correct' : 'incorrect'];
+    })),
+  }));
+}
+
+const attemptState = (a, test) => ({
   _id: a._id,
   status: a.status,
   startedAt: a.startedAt,
@@ -87,10 +100,11 @@ const attemptState = (a) => ({
   lastQid: a.lastQid,
   remainingMs: Math.max(0, a.deadline.getTime() - (a.pausedAt ? a.pausedAt.getTime() : Date.now())),
   answers: a.answers,
+  ...(test && { sectionResults: sectionResults(a, test) }),
 });
 
 const examPayload = (attempt, test) => ({
-  attempt: attemptState(attempt),
+  attempt: attemptState(attempt, test),
   test: attempt.pausedAt ? metaView(test) : examView(test),
   serverNow: Date.now(),
 });
@@ -129,15 +143,47 @@ r.patch('/:id/answers', ah(async (req, res) => {
   if (attempt.pausedAt) return res.status(409).json({ error: 'Test is paused' });
   if (isExpired(attempt)) return res.status(409).json({ error: 'Time is up' });
   const byQid = new Map(attempt.answers.map((a) => [a.qid, a]));
+  let locked = new Set();
+  if (attempt.sectionsSubmitted?.length) {
+    const done = new Set(attempt.sectionsSubmitted.map((x) => x.section));
+    const test = await Test.findById(attempt.test).select('questions.qid questions.section').lean();
+    locked = new Set(test.questions.filter((q) => done.has(q.section)).map((q) => q.qid));
+  }
   for (const u of req.body.answers || []) {
     const a = byQid.get(u.qid);
-    if (!a) continue;
+    if (!a || locked.has(u.qid)) continue; // answers in a submitted section can't change
     if ('selected' in u) a.selected = u.selected || null;
     if ('flagged' in u) a.flagged = !!u.flagged;
     if (Number.isFinite(u.timeSpentSec)) a.timeSpentSec = Math.max(0, Math.round(u.timeSpentSec));
   }
   await attempt.save();
   res.json({ ok: true });
+}));
+
+// Submit one section early: lock its answers and return its score. Submitting the last section
+// submits the whole test.
+r.post('/:id/sections/:section/submit', ah(async (req, res) => {
+  const attempt = await loadOpenAttempt(req, res);
+  if (!attempt) return;
+  if (attempt.pausedAt) return res.status(409).json({ error: 'Test is paused' });
+  const test = await Test.findById(attempt.test).lean();
+  if (isExpired(attempt)) {
+    await finalize(attempt, test);
+    return res.json({ finished: true, attemptId: attempt._id });
+  }
+  const live = test.sections.filter((s) => test.questions.some((q) => q.section === s.id));
+  const sec = live.find((s) => s.id === req.params.section);
+  if (!sec) return res.status(404).json({ error: 'Section not found' });
+  if (!attempt.sectionsSubmitted.some((x) => x.section === sec.id)) {
+    const { score, maxScore, correct, incorrect, unattempted } = scoreAttempt(test, attempt.answers).sections.find((x) => x.id === sec.id);
+    attempt.sectionsSubmitted.push({ section: sec.id, at: new Date(), result: { score, maxScore, correct, incorrect, unattempted } });
+  }
+  if (live.every((s) => attempt.sectionsSubmitted.some((x) => x.section === s.id))) {
+    await finalize(attempt, test);
+    return res.json({ finished: true, attemptId: attempt._id });
+  }
+  await attempt.save();
+  res.json({ attempt: attemptState(attempt, test) });
 }));
 
 r.post('/:id/submit', ah(async (req, res) => {
