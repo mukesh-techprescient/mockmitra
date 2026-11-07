@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useFetch } from '../useFetch.js';
 import TopicTable from '../components/TopicTable.jsx';
-import CoachReport from '../components/CoachReport.jsx';
+import CoachReport, { isReady } from '../components/CoachReport.jsx';
+import { CoachChat, ReportRequest } from '../components/AICoach.jsx';
 import { ErrorBox, Spinner, pct } from '../components/ui.jsx';
 
 function Trend({ points }) {
@@ -31,7 +32,8 @@ export default function Insights() {
   const [older, setOlder] = useState(false);
   if (loading) return <Spinner />;
   if (error) return <ErrorBox error={error} onRetry={reload} />;
-  const { overall: o, topics, sections, trend, reports } = data;
+  const { overall: o, topics, sections, trend, reports: all, ai } = data;
+  const reports = all.filter(isReady);
 
   if (!o.attempts) {
     return (
@@ -52,17 +54,25 @@ export default function Insights() {
         <div className="card"><b className={weak.length ? 'bad-t' : 'ok-t'}>{weak.length}</b><span>Weak topics</span></div>
       </div>
 
-      {reports.length > 0 && (
-        <section>
-          <CoachReport report={reports[0]} />
-          {reports.length > 1 && (
-            <>
-              <button className="btn sm" onClick={() => setOlder((v) => !v)}>{older ? 'Hide' : 'Show'} {reports.length - 1} earlier report{reports.length > 2 ? 's' : ''}</button>
-              {older && reports.slice(1).map((r) => <CoachReport key={r._id} report={r} />)}
-            </>
-          )}
-        </section>
-      )}
+      {(reports.length > 0 || ai?.enabled) && <section className="coach-section">
+        <div className="section-head">
+          <h2>Coach</h2>
+          <ReportRequest path="/insights/coach" report={all[0]} ai={ai} onReady={reload}
+            label="Get an AI coach report" again="Regenerate coach report" />
+        </div>
+        {reports.length > 0 ? (
+          <>
+            <CoachReport report={reports[0]} />
+            {reports.length > 1 && (
+              <>
+                <button className="btn sm" onClick={() => setOlder((v) => !v)}>{older ? 'Hide' : 'Show'} {reports.length - 1} earlier report{reports.length > 2 ? 's' : ''}</button>
+                {older && reports.slice(1).map((r) => <CoachReport key={r._id} report={r} />)}
+              </>
+            )}
+          </>
+        ) : ai?.enabled && <p className="muted">No coach report yet. The AI coach reads every test you have finished and writes one for you.</p>}
+        <CoachChat suggestions={['What should I focus on this week?', 'Which topics cost me the most marks?', 'How should I use my time in the exam?']} />
+      </section>}
 
       <h2>Topics, weakest first</h2>
       <TopicTable topics={topics} />

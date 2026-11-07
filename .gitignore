@@ -10,3 +10,4 @@ tools/pdf2json/.work
 !.env.example
 samples/pdfs/
 analysis/
+*.swp

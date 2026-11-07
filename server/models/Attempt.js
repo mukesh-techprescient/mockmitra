@@ -21,6 +21,13 @@ const attemptSchema = new mongoose.Schema(
     pausedMs: { type: Number, default: 0 }, // total time spent paused
     lastQid: String, // question on screen when paused, to resume there
     submittedAt: Date,
+    // Sections submitted early: their answers are locked and their score shown while the test goes on.
+    sectionsSubmitted: [{
+      _id: false,
+      section: String,
+      at: Date,
+      result: { score: Number, maxScore: Number, correct: Number, incorrect: Number, unattempted: Number },
+    }],
     answers: [answerSchema],
     result: {
       score: Number,

@@ -27,6 +27,10 @@ export default function Exam() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [paused, setPaused] = useState(false);
   const [pauseBusy, setPauseBusy] = useState(false);
+  const [sectionResults, setSectionResults] = useState({}); // section id -> { result, statuses } once submitted
+  const [secConfirm, setSecConfirm] = useState(null); // section id waiting for confirmation
+  const [secBusy, setSecBusy] = useState(false);
+  const [scored, setScored] = useState(null); // section id whose score card is showing
 
   const pending = useRef(new Map());
   const flushTimer = useRef(null);
@@ -38,12 +42,20 @@ export default function Exam() {
   const deadlineRef = useRef(0);
   const offsetRef = useRef(0);
   const submittedRef = useRef(false);
+  const resultsRef = useRef(sectionResults);
+  resultsRef.current = sectionResults;
+  const sectionOf = useRef({}); // qid -> section id
+  // Answers in a submitted section are locked.
+  const isLocked = (qid) => !!resultsRef.current[sectionOf.current[qid]];
+  const byResults = (list = []) => Object.fromEntries(list.map((r) => [r.section, r]));
 
   // ---- load / resume. While paused the server sends no questions.
   const applyPayload = useCallback(({ attempt, test, serverNow }) => {
     setTest(test);
     setAttemptId(attempt._id);
     setPaused(attempt.paused);
+    setSectionResults(byResults(attempt.sectionResults));
+    if (test.questions?.length) sectionOf.current = Object.fromEntries(test.questions.map((x) => [x.qid, x.section]));
     offsetRef.current = serverNow - Date.now();
     deadlineRef.current = new Date(attempt.deadline).getTime();
     setRemaining(attempt.remainingMs / 1000);
@@ -87,8 +99,9 @@ export default function Exam() {
   }, [flush]);
 
   const update = useCallback((qid, patch, persist = true) => {
+    if (isLocked(qid) && ('selected' in patch || 'flagged' in patch)) return;
     setAnswers((prev) => ({ ...prev, [qid]: { ...prev[qid], ...patch } }));
-    if (persist) {
+    if (persist && !isLocked(qid)) {
       const { visited, ...server } = patch;
       if (Object.keys(server).length) queue(qid, server);
     }
@@ -125,6 +138,29 @@ export default function Exam() {
       submittedRef.current = false;
       setSubmitting(false);
       alert(`Could not submit: ${e.message}. Check your connection and try again.`);
+    }
+  }, [attemptId, commitTime, flush, nav]);
+
+  // ---- submit one section early: lock it and show its score
+  const submitSection = useCallback(async (sid) => {
+    setSecBusy(true);
+    commitTime();
+    try {
+      await flush();
+      if (pending.current.size) throw new Error('your latest answers are not saved yet');
+      const d = await api(`/attempts/${attemptId}/sections/${sid}/submit`, { method: 'POST' });
+      if (d.finished) {
+        submittedRef.current = true;
+        nav(`/results/${attemptId}`, { replace: true });
+        return;
+      }
+      setSectionResults(byResults(d.attempt.sectionResults));
+      setSecConfirm(null);
+      setScored(sid);
+    } catch (e) {
+      alert(`Could not submit this section: ${e.message}. Check your connection and try again.`);
+    } finally {
+      setSecBusy(false);
     }
   }, [attemptId, commitTime, flush, nav]);
 
@@ -186,7 +222,7 @@ export default function Exam() {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (!q || confirming || e.target.tagName === 'INPUT') return;
+      if (!q || confirming || secConfirm || scored || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       const k = e.key.toLowerCase();
       const byNum = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4 }[k];
       const opt = byNum !== undefined ? q.options[byNum] : q.options.find((o) => o.key.toLowerCase() === k);
@@ -196,7 +232,7 @@ export default function Exam() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [q, idx, go, update, confirming]);
+  }, [q, idx, go, update, confirming, secConfirm, scored]);
 
   const counts = useMemo(() => {
     const c = { answered: 0, flagged: 0, unanswered: 0 };
@@ -238,6 +274,26 @@ export default function Exam() {
 
   const sectionName = (id) => test.sections.find((s) => s.id === id)?.name;
   const low = remaining < 300;
+  const liveSections = test.sections.filter((s) => qs.some((x) => x.section === s.id));
+  const lockedHere = sectionResults[q.section];
+  const qStatus = lockedHere?.statuses[q.qid]; // correct | incorrect | unattempted, once its section is submitted
+  const sectionCounts = (sid) => {
+    const c = { answered: 0, unanswered: 0, flagged: 0 };
+    for (const qq of qs) {
+      if (qq.section !== sid) continue;
+      const st = answers[qq.qid] || {};
+      if (st.selected) c.answered++; else c.unanswered++;
+      if (st.flagged) c.flagged++;
+    }
+    return c;
+  };
+  const nextOpen = (sid) => {
+    const order = liveSections.map((s) => s.id);
+    const after = [...order.slice(order.indexOf(sid) + 1), ...order.slice(0, order.indexOf(sid))];
+    const target = after.find((x) => !sectionResults[x]);
+    return target ? qs.findIndex((x) => x.section === target) : -1;
+  };
+  const STATUS_LABEL = { correct: 'Correct', incorrect: 'Wrong', unattempted: 'Not answered' };
 
   return (
     <div className="exam">
@@ -251,15 +307,24 @@ export default function Exam() {
       </header>
 
       {test.sections.length > 1 && (
+        <div className="section-bar">
         <div className="section-tabs">
           {test.sections.map((s) => {
             const first = qs.findIndex((x) => x.section === s.id);
+            const done = sectionResults[s.id];
             return (
               <button key={s.id} className={q.section === s.id ? 'active' : ''} onClick={() => go(first)} disabled={first < 0}>
                 {s.name}
+                {done && <span className="sec-score" title="Section submitted">✓ {done.result.score}/{done.result.maxScore}</span>}
               </button>
             );
           })}
+        </div>
+        {!lockedHere && liveSections.length > 1 && (
+          <button className="btn sm sec-submit" onClick={() => setSecConfirm(q.section)} disabled={submitting || secBusy}>
+            Submit {sectionName(q.section)}
+          </button>
+        )}
         </div>
       )}
 
@@ -269,12 +334,17 @@ export default function Exam() {
             <span className="q-num">Question {idx + 1} <span className="muted">of {qs.length}</span></span>
             <span className="muted small">{sectionName(q.section)}</span>
           </div>
+          {lockedHere && (
+            <div className={`locked-note ${qStatus}`}>
+              <b>{STATUS_LABEL[qStatus]}</b> · {sectionName(q.section)} is submitted ({lockedHere.result.score}/{lockedHere.result.maxScore}). Answers can't be changed; the solution is shown after the test.
+            </div>
+          )}
           <Rich text={q.text} className="q-text" />
           {q.image && <img className="q-img" src={assetUrl(q.image)} alt={`Figure for question ${idx + 1}`} />}
-          <div className="options" role="radiogroup">
+          <div className={`options ${lockedHere ? 'review locked' : ''}`} role="radiogroup">
             {q.options.map((o) => (
-              <label key={o.key} className={`option ${a.selected === o.key ? 'selected' : ''}`}>
-                <input type="radio" name={q.qid} checked={a.selected === o.key} onChange={() => update(q.qid, { selected: o.key })} />
+              <label key={o.key} className={`option ${a.selected === o.key ? (lockedHere ? (qStatus === 'correct' ? 'right' : 'wrong') : 'selected') : ''}`}>
+                <input type="radio" name={q.qid} checked={a.selected === o.key} disabled={!!lockedHere} onChange={() => update(q.qid, { selected: o.key })} />
                 <span className="opt-key">{o.key.toUpperCase()}</span>
                 <span className="opt-body">
                   <Rich text={o.text} as="span" />
@@ -285,8 +355,8 @@ export default function Exam() {
           </div>
           <div className="q-actions">
             <button className="btn" onClick={() => go(idx - 1)} disabled={idx === 0}>← Previous</button>
-            <button className="btn ghost" onClick={() => update(q.qid, { selected: null })} disabled={!a.selected}>Clear</button>
-            <button className={`btn ${a.flagged ? 'flag-on' : ''}`} onClick={() => update(q.qid, { flagged: !a.flagged })}>
+            <button className="btn ghost" onClick={() => update(q.qid, { selected: null })} disabled={!a.selected || !!lockedHere}>Clear</button>
+            <button className={`btn ${a.flagged ? 'flag-on' : ''}`} onClick={() => update(q.qid, { flagged: !a.flagged })} disabled={!!lockedHere}>
               {a.flagged ? '★ Marked' : '☆ Mark for review'}
             </button>
             <div className="spacer" />
@@ -303,13 +373,17 @@ export default function Exam() {
             <span><i className="dot answered" />Answered {counts.answered}</span>
             <span><i className="dot skipped" />Not answered {counts.unanswered}</span>
             <span><i className="dot flagged" />Marked {counts.flagged}</span>
+            {Object.keys(sectionResults).length > 0 && (
+              <span className="muted small">Submitted sections: <i className="dot correct" />correct <i className="dot incorrect" />wrong</span>
+            )}
           </div>
           {test.sections.map((s) => (
             <div key={s.id}>
               {test.sections.length > 1 && <div className="palette-sec">{s.name}</div>}
               <div className="palette-grid">
                 {qs.map((qq, i) => qq.section !== s.id ? null : (
-                  <button key={qq.qid} className={`pq ${statusOf(answers[qq.qid] || {})} ${i === idx ? 'current' : ''}`} onClick={() => go(i)}>
+                  <button key={qq.qid} onClick={() => go(i)}
+                    className={`pq ${sectionResults[s.id] ? `locked ${sectionResults[s.id].statuses[qq.qid]}` : statusOf(answers[qq.qid] || {})} ${i === idx ? 'current' : ''}`}>
                     {i + 1}
                   </button>
                 ))}
@@ -318,6 +392,55 @@ export default function Exam() {
           ))}
         </aside>
       </div>
+
+      {secConfirm && (() => {
+        const c = sectionCounts(secConfirm);
+        const last = liveSections.every((s) => s.id === secConfirm || sectionResults[s.id]);
+        return (
+          <div className="modal-bg" onClick={() => !secBusy && setSecConfirm(null)}>
+            <div className="modal card" onClick={(e) => e.stopPropagation()}>
+              <h2>Submit {sectionName(secConfirm)}?</h2>
+              <div className="stats-row">
+                <div><b>{c.answered}</b><span>Answered</span></div>
+                <div><b>{c.unanswered}</b><span>Not answered</span></div>
+                <div><b>{c.flagged}</b><span>Marked</span></div>
+              </div>
+              <p className="muted">
+                You'll see your {sectionName(secConfirm)} score now, and you can't change these answers afterwards.
+                {last ? ' This is the last section, so this submits the whole test.' : ' The timer keeps running for the other sections.'}
+              </p>
+              <div className="row-end">
+                <button className="btn" onClick={() => setSecConfirm(null)} disabled={secBusy}>Keep working</button>
+                <button className="btn primary" onClick={() => submitSection(secConfirm)} disabled={secBusy}>{secBusy ? 'Submitting…' : last ? 'Submit test' : 'Submit section'}</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {scored && sectionResults[scored] && (() => {
+        const r = sectionResults[scored].result;
+        const next = nextOpen(scored);
+        return (
+          <div className="modal-bg" onClick={() => setScored(null)}>
+            <div className="modal card section-score" onClick={(e) => e.stopPropagation()}>
+              <div className="muted small">{sectionName(scored)} submitted</div>
+              <div className="score-big"><b>{r.score}</b><span>/ {r.maxScore}</span></div>
+              <div className="stats-row">
+                <div><b className="ok-t">{r.correct}</b><span>Correct</span></div>
+                <div><b className="bad-t">{r.incorrect}</b><span>Wrong</span></div>
+                <div><b>{r.unattempted}</b><span>Not answered</span></div>
+              </div>
+              <p className="muted small">The questions are marked right or wrong in the palette. Solutions are shown after you submit the test.</p>
+              <div className="row-end">
+                {next >= 0
+                  ? <button className="btn primary" onClick={() => { setScored(null); go(next); }}>Go to {sectionName(qs[next].section)} →</button>
+                  : <button className="btn primary" onClick={() => setScored(null)}>Continue</button>}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {confirming && (
         <div className="modal-bg" onClick={() => !submitting && setConfirming(false)}>

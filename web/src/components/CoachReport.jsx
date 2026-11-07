@@ -3,12 +3,15 @@ import { fmtDate } from './ui.jsx';
 
 const SEV = { high: 'Top priority', medium: 'Priority', low: 'Keep an eye on' };
 
+export const isReady = (r) => !r.status || r.status === 'ready'; // offline reports predate the status field
+
 export default function CoachReport({ report: r }) {
+  const kind = r.scope === 'attempt' ? 'Paper analysis' : r.source === 'ai' ? 'AI coach report' : "Coach's report";
   return (
     <article className="card coach">
       <div className="coach-head">
         <div>
-          <div className="muted small">Coach's report · {fmtDate(r.createdAt)}{r.basedOn?.attempts ? ` · based on ${r.basedOn.attempts} test${r.basedOn.attempts > 1 ? 's' : ''}` : ''}</div>
+          <div className="muted small">{kind} · {fmtDate(r.createdAt)}{r.scope !== 'attempt' && r.basedOn?.attempts ? ` · based on ${r.basedOn.attempts} test${r.basedOn.attempts > 1 ? 's' : ''}` : ''}</div>
           <h2>{r.title}</h2>
         </div>
       </div>
