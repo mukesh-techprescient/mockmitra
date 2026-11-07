@@ -1,9 +1,16 @@
-# Hand-off — state as of 15 Oct 2026
+# Hand-off — state as of 7 Nov 2026
 
-Work moved to another computer. This branch (`ai-coach`) holds the latest code; **it is not deployed**.
-`main` on GitHub is what is live on Netlify.
+`main` is live on Netlify and includes everything below (deployed 7 Nov 2026). Pushing `main` starts a
+Netlify build; use `[skip netlify]` in the commit message for pushes that should not deploy.
 
-## 1. AI coach (this branch) — built and tested locally, not deployed
+## 0. Section submit (deployed)
+During a test, "Submit <section>" locks that section's answers and shows its score at once, with each
+question marked right/wrong (correct options and explanations stay hidden until the test is submitted).
+Submitting the last section submits the test. Server: `POST /api/attempts/:id/sections/:section/submit`,
+`Attempt.sectionsSubmitted`, autosave ignores locked sections. UI in `web/src/pages/Exam.jsx`.
+The review page deliberately shows nothing about when sections were submitted.
+
+## 1. AI coach (deployed; needs ANTHROPIC_API_KEY in Netlify to switch on)
 Three features using the Claude API (`claude-opus-5-5`):
 - **Regenerate coach report** — button on Insights. Claude reads all of the student's papers plus the
   previous report and writes a report in the existing coach-report format.
@@ -32,10 +39,11 @@ Tested locally against the live Atlas DB: overall report, FT4 paper report, both
 KaTeX rendering, background-function signature check, esbuild bundling of both functions.
 **Not tested:** the Netlify dispatch to the background function (only runs on Netlify).
 
-To deploy:
-1. Netlify → Site configuration → Environment variables: add `ANTHROPIC_API_KEY`.
-2. Merge `ai-coach` into `main` and push (this triggers a build). After deploy, click "Regenerate coach
-   report" on Insights and confirm it finishes (check the function logs for `coach-background` if not).
+To switch it on in production:
+1. Netlify → Site configuration → Environment variables: add `ANTHROPIC_API_KEY` (then trigger a deploy
+   or wait for the next one, since functions read env vars at deploy time).
+2. Click "Regenerate coach report" on Insights and confirm it finishes (check the `coach-background`
+   function logs if it does not).
 
 ## 2. Content in the database (Atlas, db `mockmitra`)
 - BITSAT category: Mock Test 1, Mock Test 2, FT3–FT10 (all 130 Q, published, answer keys cross-checked by a
@@ -55,7 +63,7 @@ To deploy:
   the app needs that added and a rebuild.
 
 ## 4. Open items / ideas
-- Deploy the AI coach (section 1).
+- Add `ANTHROPIC_API_KEY` in Netlify so the AI coach appears (section 1).
 - Android app: add an API base URL setting and rebuild (section 3).
 - Optional: load the 74-question maths weak-topic bank into the app as a practice test.
 - Optional: sort tests by paper number instead of newest-first.
